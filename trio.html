@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#06120e">
+<meta name="color-scheme" content="dark">
+<title>TRIO – จำเลข • จับคู่ • คว้าใจ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;600;700;800&family=Prompt:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+window.addEventListener('error',function(e){var b=document.getElementById('bootErr');if(b)b.textContent='ข้อผิดพลาด: '+(e.message||'ไม่ทราบสาเหตุ');});
+</script>
+<style>
+:root{--gold:#f7c948;--txt:#f6f2e9;--muted:rgba(246,242,233,.62);--line:rgba(255,255,255,.11);
+  --panel:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.03));--sh:0 16px 34px -18px rgba(0,0,0,.9)}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden}
+body{font-family:"Prompt","Kanit",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;color:var(--txt);background:#06120e;
+  -webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased;-webkit-user-select:none;user-select:none;-webkit-text-size-adjust:100%}
+input{font:inherit;-webkit-user-select:text;user-select:text}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer;touch-action:manipulation;-webkit-appearance:none;appearance:none}
+button:disabled{cursor:default}
+h1,h2,h3{margin:0;font-family:"Kanit",sans-serif}
+h3{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+.muted{color:var(--muted);font-size:12.5px}
+
+/* Boot check */
+#boot{position:fixed;top:0;left:0;right:0;bottom:0;z-index:999;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;background:#06120e;color:#fff;font-size:16px;line-height:1.6}
+#boot div{opacity:0;animation:bootShow .3s ease 1.5s forwards;max-width:460px}
+@keyframes bootShow{to{opacity:1}}
+
+/* Background */
+#bg{position:fixed;top:0;left:0;right:0;bottom:0;z-index:0;pointer-events:none;overflow:hidden;background:
+  radial-gradient(1100px 760px at 50% -18%,rgba(40,170,115,.45),transparent 62%),
+  radial-gradient(900px 700px at 110% 110%,rgba(125,75,225,.24),transparent 60%),
+  radial-gradient(800px 600px at -10% 105%,rgba(20,125,165,.24),transparent 60%),
+  linear-gradient(180deg,#0a2019,#040a08)}
+#bg i{position:absolute;bottom:-20px;left:var(--x);width:var(--s);height:var(--s);border-radius:50%;opacity:0;
+  background:radial-gradient(circle,rgba(255,224,140,.95),rgba(255,200,80,0) 70%);animation:rise var(--d) linear var(--dl) infinite}
+@keyframes rise{0%{transform:translate(0,0);opacity:0}10%{opacity:.75}100%{transform:translate(40px,-110vh);opacity:0}}
+
+/* Screens */
+#app{position:fixed;top:0;left:0;right:0;bottom:0;z-index:1}
+.screen{position:absolute;top:0;left:0;right:0;bottom:0;display:none;flex-direction:column;overflow:hidden;
+  padding:calc(env(safe-area-inset-top,0px) + 10px) calc(env(safe-area-inset-right,0px) + 12px) calc(env(safe-area-inset-bottom,0px) + 10px) calc(env(safe-area-inset-left,0px) + 12px)}
+.screen.active{display:flex;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.wrap{width:100%;max-width:820px;margin:0 auto;flex:1;min-height:0;display:flex;flex-direction:column}
+.wrap>*+*{margin-top:clamp(8px,1.5vh,14px)}
+.fill{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;padding:2px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.fill::-webkit-scrollbar{display:none}
+.fill>*+*{margin-top:clamp(8px,1.5vh,14px)}
+.fill>:first-child{margin-top:auto}.fill>:last-child{margin-bottom:auto}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.center{justify-content:center}
+.head{display:flex;align-items:center;gap:12px;flex:0 0 auto}
+.head h2{font-size:clamp(18px,2.6vh,24px);font-weight:700}
+.pill-tag{margin-left:auto;font-size:11px;font-weight:600;padding:3px 10px;border-radius:999px;background:rgba(124,76,227,.3);border:1px solid rgba(191,157,255,.5)}
+
+/* Panels & Buttons */
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:clamp(10px,1.8vh,18px);box-shadow:var(--sh),inset 0 1px 0 rgba(255,255,255,.07)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:clamp(8px,1.5vh,14px)}
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 18px;border-radius:14px;white-space:nowrap;
+  font-family:"Kanit",sans-serif;font-weight:600;letter-spacing:.02em;color:#3b2300;background:linear-gradient(180deg,#ffe592,#f6b934 55%,#dc8c14);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7),inset 0 -3px 0 rgba(0,0,0,.18),0 10px 22px -8px rgba(246,185,52,.6);transition:transform .15s,filter .15s}
+.btn:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.07)}
+.btn:active:not(:disabled){transform:translateY(1px)}
+.btn:disabled{opacity:.35;filter:saturate(.2)}
+.btn.emerald{color:#fff;background:linear-gradient(180deg,#5ae6a8,#1fa36b 55%,#127a4e);box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -3px 0 rgba(0,0,0,.2),0 10px 22px -8px rgba(31,163,107,.65)}
+.btn.violet{color:#fff;background:linear-gradient(180deg,#bf9dff,#7c4ce3 55%,#5530b0);box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -3px 0 rgba(0,0,0,.2),0 10px 22px -8px rgba(124,76,227,.65)}
+.btn.rose{color:#fff;background:linear-gradient(180deg,#ff94a8,#e0435f 55%,#a82442);box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -3px 0 rgba(0,0,0,.2),0 10px 22px -8px rgba(224,67,95,.6)}
+.btn.ghost{color:var(--txt);background:rgba(255,255,255,.08);border:1px solid var(--line);box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+.btn.ghost:hover:not(:disabled){background:rgba(255,255,255,.14)}
+.btn.sm{padding:8px 13px;font-size:14px;border-radius:11px}
+.btn.big{width:100%;flex:0 0 auto;padding:clamp(12px,2vh,16px);font-size:clamp(16px,2.4vh,19px);border-radius:16px}
+.btn.wide{width:100%}
+.btn.icon{width:40px;height:40px;padding:0;font-size:18px;flex:0 0 auto}
+.corner{position:absolute;top:calc(env(safe-area-inset-top,0px) + 12px);right:calc(env(safe-area-inset-right,0px) + 12px);z-index:3}
+
+/* Forms */
+.field{display:flex;align-items:center;gap:12px}
+.field>span{flex:0 0 auto;color:var(--muted);font-size:14px}
+.name-input,.code-input{flex:1;width:100%;min-width:0;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:rgba(0,0,0,.32);color:var(--txt);outline:none}
+.name-input:focus,.code-input:focus{border-color:rgba(247,201,72,.7);box-shadow:0 0 0 3px rgba(247,201,72,.18)}
+.code-input{text-transform:uppercase;letter-spacing:.45em;font-size:24px;text-align:center;font-family:"Kanit",sans-serif;font-weight:700}
+.seg{display:flex;gap:8px}
+.segb{flex:1 1 0;min-width:0;padding:clamp(7px,1.2vh,10px) 6px;border-radius:13px;background:rgba(255,255,255,.05);border:1px solid var(--line);text-align:center;transition:background .2s,border-color .2s}
+.segb b{display:block;font-family:"Kanit",sans-serif;font-weight:600;font-size:clamp(14px,2vh,16px)}
+.segb small{display:block;color:var(--muted);font-size:11.5px;line-height:1.35}
+.segb:hover:not(:disabled){background:rgba(255,255,255,.1)}
+.segb.on{background:linear-gradient(180deg,rgba(247,201,72,.26),rgba(247,201,72,.07));border-color:rgba(247,201,72,.8);box-shadow:inset 0 0 0 1px rgba(247,201,72,.35),0 8px 20px -10px rgba(247,201,72,.6)}
+.segb:disabled{opacity:.35}
+.modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.segb.mode{display:flex;flex-direction:column;align-items:center;padding:clamp(8px,1.4vh,12px) 6px}
+.segb.mode .mi{font-size:clamp(18px,3vh,24px);line-height:1.2}
+.switch-row{display:flex;justify-content:space-between;align-items:center;width:100%;padding:9px 2px;font-weight:500;text-align:left}
+.switch-row+.switch-row{border-top:1px solid var(--line)}
+.sw{position:relative;flex:0 0 46px;height:26px;border-radius:999px;background:rgba(255,255,255,.16);transition:background .25s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.4);transition:left .25s}
+.sw.on{background:linear-gradient(90deg,#3ddc97,#1fa36b)}.sw.on::after{left:23px}
+
+/* Menu */
+.menu-wrap{justify-content:space-evenly;align-items:center;text-align:center;max-width:680px}
+.menu-wrap>*+*{margin-top:0}
+.brand{display:flex;flex-direction:column;align-items:center}
+.logo{font-weight:800;font-size:clamp(54px,13vh,150px);line-height:.95;letter-spacing:.06em;
+  background:linear-gradient(105deg,transparent 42%,rgba(255,255,255,.95) 50%,transparent 58%),linear-gradient(180deg,#fffbe6 0%,#ffe08a 30%,#f5b532 55%,#c46f0e 80%,#8a4708 100%);
+  background-size:300% 100%,100% 100%;background-repeat:no-repeat;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 3px 0 #5c3008) drop-shadow(0 6px 0 #3a1d04) drop-shadow(0 18px 26px rgba(0,0,0,.6));animation:shine 5s ease-in-out infinite}
+@keyframes shine{0%,55%{background-position:100% 0,0 0}100%{background-position:0% 0,0 0}}
+.ribbon{display:inline-flex;gap:10px;align-items:center;margin-top:clamp(6px,1.2vh,12px);padding:6px 22px;border-radius:999px;background:linear-gradient(180deg,#3d2a6b,#22163f);
+  border:1px solid rgba(247,201,72,.6);box-shadow:0 10px 24px -10px rgba(0,0,0,.8);font-family:"Kanit",sans-serif;font-weight:600;color:#ffe9a8;letter-spacing:.06em;font-size:clamp(12px,1.9vh,16px)}
+.ribbon i{color:var(--gold);font-style:normal;font-size:.8em}
+.sub{color:var(--muted);margin:clamp(4px,1vh,10px) 0 0;font-size:clamp(12px,1.8vh,15px)}
+.hero{--w:clamp(48px,10vh,104px);position:relative;flex:0 0 auto;width:calc(var(--w)*3.3);height:calc(var(--w)*1.75)}
+.hero::before{content:"";position:absolute;left:-40%;right:-40%;top:15%;bottom:5%;background:radial-gradient(ellipse,rgba(247,201,72,.25),transparent 65%);pointer-events:none}
+.hc{position:absolute;left:50%;top:calc(var(--w)*.22);margin-left:calc(var(--w)*-.5);transform-origin:50% 120%}
+.hc0{transform:translateX(calc(var(--w)*-.95)) rotate(-14deg)}
+.hc1{top:0;z-index:2}
+.hc2{transform:translateX(calc(var(--w)*.95)) rotate(14deg)}
+.hc .card{animation:float 4.5s ease-in-out infinite}
+.hc0 .card{animation-delay:-.8s}.hc2 .card{animation-delay:-1.6s}
+@keyframes float{50%{transform:translateY(-8px)}}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(8px,1.2vh,12px);width:100%}
+.tile{display:flex;align-items:center;gap:12px;padding:clamp(8px,1.5vh,14px) 12px;border-radius:18px;text-align:left;min-width:0;
+  background:var(--panel);border:1px solid var(--line);box-shadow:var(--sh),inset 0 1px 0 rgba(255,255,255,.07);transition:transform .2s,border-color .2s}
+.tile:hover{transform:translateY(-3px);border-color:rgba(247,201,72,.5)}
+.tile .ic{flex:0 0 auto;width:clamp(36px,5.4vh,48px);height:clamp(36px,5.4vh,48px);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:clamp(18px,2.8vh,24px);
+  background:linear-gradient(140deg,var(--a),var(--b));box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -2px 0 rgba(0,0,0,.2),0 10px 20px -8px var(--b)}
+.tile .tt{min-width:0}
+.tile b{display:block;font-family:"Kanit",sans-serif;font-size:clamp(14px,2.1vh,17px);font-weight:600}
+.tile small{display:block;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile .go{margin-left:auto;font-size:24px;opacity:.5}
+.tile.feature{grid-column:1/-1;background:linear-gradient(135deg,rgba(79,224,160,.28),rgba(31,163,107,.06));border-color:rgba(79,224,160,.45)}
+.tile.feature b{font-size:clamp(17px,2.5vh,20px)}
+
+/* Cards */
+.card{--cw:var(--w,60px);position:relative;flex:0 0 auto;display:flex;align-items:center;justify-content:center;overflow:hidden;
+  width:var(--cw);height:calc(var(--cw)*1.4);padding:0;margin:0;border-radius:calc(var(--cw)*.14);color:var(--t,#fff);font-family:"Kanit",sans-serif;
+  background:radial-gradient(120% 60% at 18% 0%,rgba(255,255,255,.5),rgba(255,255,255,0) 55%),
+    radial-gradient(circle at 50% 52%,rgba(255,255,255,.2) 0 30%,rgba(255,255,255,0) 31%),
+    linear-gradient(160deg,var(--k1,#888),var(--k2,#444));
+  border:max(2px,calc(var(--cw)*.05)) solid #fff8ea;
+  box-shadow:0 calc(var(--cw)*.14) calc(var(--cw)*.26) calc(var(--cw)*-.1) rgba(0,0,0,.85),0 2px 4px rgba(0,0,0,.35)}
+.card::before{content:"";position:absolute;top:calc(var(--cw)*.06);left:calc(var(--cw)*.06);right:calc(var(--cw)*.06);bottom:calc(var(--cw)*.06);border-radius:calc(var(--cw)*.08);border:1px solid rgba(255,255,255,.45);pointer-events:none}
+.card::after{content:"";position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.32) 48%,transparent 60%);transform:translateX(-130%);transition:transform .7s}
+.card:hover::after{transform:translateX(130%)}
+.card .n{position:relative;z-index:1;font-weight:800;font-size:calc(var(--cw)*.5);line-height:1;pointer-events:none;text-shadow:0 2px 0 rgba(0,0,0,.22),0 0 calc(var(--cw)*.25) rgba(255,255,255,.3)}
+.card .cn{position:absolute;top:calc(var(--cw)*.08);left:calc(var(--cw)*.12);font-weight:700;font-style:normal;font-size:calc(var(--cw)*.17);line-height:1;pointer-events:none}
+.card .cn.b{top:auto;left:auto;bottom:calc(var(--cw)*.08);right:calc(var(--cw)*.12);transform:rotate(180deg)}
+.c1{--k1:#ff8080;--k2:#c4252f}.c2{--k1:#4fdcc9;--k2:#0f7a70}.c3{--k1:#64b0ff;--k2:#1d4fb8}.c4{--k1:#ffbb66;--k2:#d4661a}
+.c5{--k1:#c39bff;--k2:#6a35c4}.c6{--k1:#ff8fc6;--k2:#bf2e76}.c7{--k1:#fff3b0;--k2:#e39a10;--t:#5a2e00}.c8{--k1:#ff7896;--k2:#b81d4a}
+.c9{--k1:#a879ff;--k2:#4b1fa6}.c10{--k1:#ff9a52;--k2:#c74a0c}.c11{--k1:#68e294;--k2:#1d8a48}.c12{--k1:#7b90ff;--k2:#2b3aa8}
+.card.c7 .n{text-shadow:0 1px 0 rgba(255,255,255,.6),0 0 14px rgba(255,255,255,.55)}
+.card.back{background:
+  radial-gradient(circle at 50% 50%,#ffe39a 0 6%,#c98f2a 7% 9%,transparent 10%),
+  radial-gradient(circle at 50% 50%,transparent 0 23%,rgba(247,201,72,.65) 24% 25.5%,transparent 26.5%),
+  repeating-conic-gradient(from 0deg at 50% 50%,rgba(247,201,72,.16) 0 7.5deg,transparent 7.5deg 15deg),
+  radial-gradient(120% 90% at 30% 0%,#2f9470,#114a37 55%,#0a2e22);border-color:#e9c56c}
+.card.back::before{border-color:rgba(247,201,72,.55)}
+.card.lit{box-shadow:0 0 0 2px var(--gold),0 0 calc(var(--cw)*.4) rgba(247,201,72,.6),0 10px 18px -10px rgba(0,0,0,.85)}
+.card.tap{box-shadow:0 0 0 1px rgba(247,201,72,.6),0 10px 18px -10px rgba(0,0,0,.85)}
+.flip{animation:flipIn .55s cubic-bezier(.2,.8,.25,1.15)}
+@keyframes flipIn{0%{transform:perspective(700px) rotateY(95deg) scale(.85);filter:brightness(2)}100%{transform:perspective(700px) rotateY(0) scale(1);filter:none}}
+.dealing .card{animation:deal .5s cubic-bezier(.2,.8,.3,1.15) both;animation-delay:calc(var(--i,0) * 24ms)}
+@keyframes deal{from{opacity:0;transform:translateY(-60px) scale(.5) rotate(-14deg)}}
+.card.pick{animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 2px var(--gold),0 0 8px rgba(247,201,72,.5)}50%{box-shadow:0 0 0 3px #fff3c4,0 0 22px rgba(247,201,72,.95)}}
+
+/* Game layout */
+.g{flex:1;min-height:0;width:100%;max-width:1280px;margin:0 auto;display:flex;flex-direction:column}
+.g>*+*{margin-top:8px}
+.bar{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:6px;border-radius:16px;background:rgba(0,0,0,.3);border:1px solid var(--line)}
+.status{flex:1;min-width:0;display:flex;align-items:center;gap:10px;padding:5px 12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid transparent;transition:all .3s}
+.status .dot{flex:0 0 10px;height:10px;border-radius:50%;background:#71807a}
+.status.mine{background:linear-gradient(90deg,rgba(247,201,72,.28),rgba(247,201,72,.05));border-color:rgba(247,201,72,.7)}
+.status.mine .dot{background:var(--gold);animation:ping 1.4s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(247,201,72,.7)}70%{box-shadow:0 0 0 9px rgba(247,201,72,0)}100%{box-shadow:0 0 0 0 rgba(247,201,72,0)}}
+.st{min-width:0;display:flex;flex-direction:column;line-height:1.3}
+.st b{font-family:"Kanit",sans-serif;font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st span{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip-mode{flex:0 0 auto;font-size:12px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--line);color:#ffe9a8}
+
+.opps{flex:0 0 auto;display:grid;gap:8px}
+.seat{position:relative;min-width:0;padding:7px 8px 6px;border-radius:16px;background:var(--panel);border:1px solid var(--line);box-shadow:var(--sh);transition:border-color .3s,box-shadow .3s}
+.seat.turn{border-color:rgba(247,201,72,.85);box-shadow:0 0 0 1px rgba(247,201,72,.35),0 0 26px -6px rgba(247,201,72,.65)}
+.seat.tm0::before,.seat.tm1::before,.seat.tm2::before{content:"";position:absolute;left:14px;right:14px;top:0;height:3px;border-radius:0 0 4px 4px}
+.seat.tm0::before{background:#ff6b6b}.seat.tm1::before{background:#4d9bff}.seat.tm2::before{background:#4fd98a}
+.seat-h{display:flex;align-items:center;gap:8px;min-width:0;height:30px}
+.av{position:relative;flex:0 0 auto;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;
+  background:linear-gradient(140deg,var(--a),var(--b));box-shadow:0 0 0 2px rgba(255,255,255,.85),0 6px 12px -4px rgba(0,0,0,.7)}
+.av.s{width:26px;height:26px;font-size:14px}
+.turn .av::after{content:"";position:absolute;top:-5px;left:-5px;right:-5px;bottom:-5px;border-radius:50%;border:2px solid transparent;border-top-color:var(--gold);border-right-color:var(--gold);animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.who{flex:1;min-width:0}
+.who b{display:block;font-family:"Kanit",sans-serif;font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.who b small{color:var(--muted);font-weight:500}
+.meta{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden}
+.pips{display:inline-flex;gap:3px}
+.pips i{width:12px;height:5px;border-radius:3px;background:rgba(255,255,255,.16)}
+.pips i.on{background:linear-gradient(90deg,#ffe08a,#f0a41f);box-shadow:0 0 8px rgba(247,201,72,.6)}
+.team{padding:1px 8px;border-radius:999px;font-size:10.5px;font-weight:600;color:#fff}
+.team.t0{background:linear-gradient(180deg,#ff7a7a,#c4252f)}.team.t1{background:linear-gradient(180deg,#64b0ff,#1d4fb8)}.team.t2{background:linear-gradient(180deg,#68e294,#1d8a48)}
+.trios{display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;padding-top:4px}
+.tb{display:inline-flex;align-items:center;justify-content:center;width:17px;height:23px;border-radius:4px;margin:0 7px 0 0;font-family:"Kanit",sans-serif;font-weight:800;font-size:11px;color:var(--t,#fff);
+  background:linear-gradient(155deg,var(--k1),var(--k2));border:1.5px solid #fff8ea;box-shadow:2px -2px 0 rgba(255,248,234,.6),4px -4px 0 rgba(255,248,234,.3),0 3px 6px rgba(0,0,0,.4)}
+.fan-wrap{position:relative;margin-top:4px}
+.fan{display:flex;justify-content:center;align-items:flex-end;height:calc(var(--w,26px)*1.4 + 8px);padding-top:6px}
+.fan>.card+.card,.hand>.card+.card{margin-left:var(--ov,0px)}
+.fan .card .cn{display:none}
+.fan .card.lit{transform:translateY(-5px)}
+.zb{position:absolute;top:0;bottom:0;width:50%;z-index:2;display:flex;align-items:flex-end;padding:0 2px 2px;border-radius:10px}
+.zb.lo{left:0;justify-content:flex-start;background:linear-gradient(90deg,rgba(247,201,72,.22),rgba(247,201,72,0) 70%)}
+.zb.hi{right:0;justify-content:flex-end;background:linear-gradient(270deg,rgba(247,201,72,.22),rgba(247,201,72,0) 70%)}
+.zb:hover,.zb:active{background-color:rgba(247,201,72,.14)}
+.zb span{font-size:10.5px;font-weight:600;padding:1px 7px;border-radius:999px;background:rgba(0,0,0,.78);color:#ffe9a8;border:1px solid rgba(247,201,72,.6);white-space:nowrap;pointer-events:none}
+
+.felt{position:relative;flex:1 1 auto;min-height:0;min-width:0;display:flex;flex-direction:column;margin:16px 12px 14px !important;padding:12px;border-radius:30px;
+  background:radial-gradient(ellipse at 50% 40%,rgba(255,255,255,.08),transparent 60%),radial-gradient(ellipse at 50% 35%,#2d9a6b,#1a6a4a 45%,#0e4231 85%);
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.05),inset 0 0 70px rgba(0,0,0,.6),0 0 0 7px #5d3618,0 0 0 9px #b07a3e,0 0 0 11px #2e1807,0 30px 60px -20px rgba(0,0,0,.9)}
+.felt::before{content:"";position:absolute;top:7px;left:7px;right:7px;bottom:7px;border-radius:24px;border:1px dashed rgba(247,201,72,.2);pointer-events:none}
+.felt.wide{flex-direction:row}
+.zone{position:relative;min-height:0;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.z-mid{flex:1 1 auto}
+.z-tray{flex:0 0 auto;margin-top:10px;border-top:1px dashed rgba(247,201,72,.22);padding-top:8px}
+.felt.wide .z-tray{margin-top:0;margin-left:10px;border-top:0;padding-top:0;border-left:1px dashed rgba(247,201,72,.22);padding-left:14px}
+.zl{height:18px;line-height:18px;margin-bottom:4px;display:flex;align-items:center;gap:8px;font-family:"Kanit",sans-serif;font-size:12px;letter-spacing:.08em;color:rgba(255,240,200,.85)}
+.zl::before,.zl::after{content:"";height:1px;width:30px;background:linear-gradient(90deg,transparent,rgba(247,201,72,.6))}
+.zl::after{transform:scaleX(-1)}
+.zl em{font-style:normal;padding:0 7px;border-radius:999px;background:rgba(0,0,0,.35);font-size:11px}
+.mid{display:grid;gap:8px;justify-content:center;align-content:center}
+.mid button.card{transition:transform .2s}
+.mid.live button.card:not(:disabled):hover{transform:translateY(-6px) rotate(-2deg);box-shadow:0 0 0 2px var(--gold),0 0 22px rgba(247,201,72,.65)}
+.hole{width:var(--w,60px);height:calc(var(--w,60px)*1.4);border-radius:calc(var(--w,60px)*.14);border:1px dashed rgba(255,255,255,.12)}
+.tray{display:flex;justify-content:center}
+.ti{display:flex;flex-direction:column;align-items:center;width:calc(var(--w,60px) + 8px)}
+.ti+.ti{margin-left:8px}
+.ti small{display:block;height:16px;line-height:16px;font-size:10.5px;color:rgba(255,255,255,.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.slot{width:var(--w,60px);height:calc(var(--w,60px)*1.4);border-radius:calc(var(--w,60px)*.14);border:2px dashed rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;
+  font-family:"Kanit",sans-serif;color:rgba(255,255,255,.22);font-size:calc(var(--w,60px)*.3);background:rgba(0,0,0,.15)}
+.tray.trio3 .card{box-shadow:0 0 0 3px #fff3c4,0 0 30px rgba(247,201,72,.95)}
+.tray.bad .card{box-shadow:0 0 0 2px #ff7a7a,0 0 20px rgba(255,90,90,.6)}
+
+.me{flex:0 0 auto;padding:7px 10px 6px;border-radius:18px;background:var(--panel);border:1px solid var(--line);box-shadow:var(--sh);transition:border-color .3s,box-shadow .3s}
+.me.turn{border-color:rgba(247,201,72,.8);box-shadow:0 0 0 1px rgba(247,201,72,.35),0 0 36px -8px rgba(247,201,72,.55)}
+.me-h{display:flex;align-items:center;justify-content:space-between;gap:8px;height:30px}
+.me-h .seat-h{flex:1}
+.me-row{display:flex;align-items:stretch;gap:8px;margin-top:4px}
+.side{flex:0 0 clamp(46px,8vw,74px);display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:14px;font-family:"Kanit",sans-serif;font-weight:600;font-size:12px;
+  color:#3b2300;background:linear-gradient(180deg,#ffe592,#f6b934 55%,#dc8c14);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),inset 0 -3px 0 rgba(0,0,0,.18),0 8px 18px -8px rgba(246,185,52,.6);transition:transform .15s,opacity .2s}
+.side i{font-style:normal;font-size:18px;line-height:1}
+.side:hover:not(:disabled){transform:translateY(-2px)}
+.side:disabled{opacity:.25;filter:saturate(.2)}
+.hand{flex:1;min-width:0;display:flex;justify-content:center;align-items:flex-end;height:calc(var(--w,60px)*1.4 + 18px);padding-bottom:3px}
+.hand>.card{transform:translateY(var(--ty,0px)) rotate(var(--rot,0deg));transform-origin:50% 140%;transition:transform .22s}
+.hand>.card:hover{transform:translateY(calc(var(--ty,0px) - 10px)) rotate(var(--rot,0deg));z-index:5}
+.hand>.card.lit{transform:translateY(calc(var(--ty,0px) - 12px)) rotate(var(--rot,0deg))}
+
+/* Modals */
+.modal{position:absolute;top:0;left:0;right:0;bottom:0;z-index:30;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(3,10,8,.72)}
+.modal.show{display:flex;animation:fadeIn .25s ease}
+.dialog{width:100%;max-width:540px;max-height:100%;overflow:auto;padding:clamp(16px,3vh,26px);border-radius:22px;text-align:center;
+  background:linear-gradient(180deg,#183a2e,#0c1f18);border:1px solid rgba(247,201,72,.35);box-shadow:0 30px 70px -20px rgba(0,0,0,.95),inset 0 1px 0 rgba(255,255,255,.08);animation:popIn .35s cubic-bezier(.2,.9,.3,1.2)}
+.dialog>*+*{margin-top:12px}
+@keyframes popIn{from{transform:scale(.85);opacity:0}}
+.q-ic{font-size:44px}
+.trophy{font-size:clamp(46px,9vh,80px);line-height:1;filter:drop-shadow(0 0 30px rgba(247,201,72,.7));animation:float 3s ease-in-out infinite}
+.end-title{font-family:"Kanit",sans-serif;font-weight:800;font-size:clamp(28px,5vh,42px);background:linear-gradient(180deg,#fffbe6,#ffd666 45%,#e8960f);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.end-reason{color:var(--muted);margin:0}
+.rank{text-align:left}
+.rk{display:flex;align-items:center;gap:10px;padding:7px 12px;border-radius:14px;background:rgba(0,0,0,.25);border:1px solid var(--line)}
+.rk+.rk{margin-top:6px}
+.rk.win{border-color:rgba(247,201,72,.75);background:linear-gradient(90deg,rgba(247,201,72,.22),rgba(0,0,0,.2))}
+.rk .pos{flex:0 0 24px;text-align:center;font-family:"Kanit",sans-serif;font-weight:700;color:var(--muted)}
+
+/* FX (never blocks clicks) */
+.fxb{position:fixed;left:50%;top:42%;z-index:60;pointer-events:none;text-align:center;transform:translate(-50%,-50%);animation:pop 1.5s cubic-bezier(.2,.9,.2,1) forwards}
+.fxb b{display:block;font-family:"Kanit",sans-serif;font-weight:800;font-size:clamp(54px,14vw,116px);letter-spacing:.06em;line-height:1.05;white-space:nowrap;
+  background:linear-gradient(180deg,#fffbe6,#ffd666 40%,#e8960f 75%,#9a5207);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;filter:drop-shadow(0 4px 0 #4a2604) drop-shadow(0 0 30px rgba(247,201,72,.6))}
+.fxb span{display:inline-block;margin-top:6px;padding:4px 14px;border-radius:999px;background:rgba(0,0,0,.7);font-family:"Kanit",sans-serif;color:#ffe9a8;font-size:15px}
+.fxb.sm b{font-size:clamp(30px,7vw,50px)}
+.fxb.good b{background:linear-gradient(180deg,#eafff3,#7cf0b0 45%,#1a9a5e);-webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 3px 0 #0b3b24) drop-shadow(0 0 24px rgba(90,230,168,.5))}
+.fxb.bad b{background:linear-gradient(180deg,#ffe0e0,#ff7070 50%,#b3202d);-webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 3px 0 #4a0a10) drop-shadow(0 0 24px rgba(255,90,90,.45))}
+@keyframes pop{0%{opacity:0;transform:translate(-50%,-50%) scale(.4)}18%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}30%{transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-62%) scale(1)}}
+.confetti{position:fixed;top:-16px;left:var(--x);width:8px;height:14px;background:var(--c);z-index:59;pointer-events:none;border-radius:2px;animation:fall var(--d) cubic-bezier(.3,.6,.4,1) var(--dl) forwards}
+@keyframes fall{to{transform:translate(var(--dx),110vh) rotate(var(--rot))}}
+.spark{position:fixed;left:50%;top:42%;width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 12px var(--c);z-index:61;pointer-events:none;animation:spark .9s ease-out forwards}
+@keyframes spark{to{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}
+
+/* Toasts */
+#toasts{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:80;width:94vw;max-width:520px;pointer-events:none;display:flex;flex-direction:column}
+.toast{pointer-events:none;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;margin-bottom:8px;border-radius:14px;font-size:14px;
+  background:rgba(12,24,20,.95);border:1px solid var(--line);border-left:4px solid #64b0ff;box-shadow:0 16px 30px -12px rgba(0,0,0,.85);animation:fadeIn .25s ease}
+.toast.err{border-left-color:#ff6b6b}
+.toast button{pointer-events:auto;background:rgba(255,255,255,.12);border-radius:8px;padding:3px 9px;flex:0 0 auto}
+
+/* Other screens */
+.code-tiles{display:flex;justify-content:center;gap:8px;margin:4px 0 12px}
+.code-tiles span{width:46px;height:56px;display:flex;align-items:center;justify-content:center;border-radius:12px;font-family:"Kanit",sans-serif;font-weight:800;font-size:28px;color:#ffe08a;
+  background:linear-gradient(180deg,#2c1d52,#1a1033);border:1px solid rgba(247,201,72,.45)}
+.lobby{display:grid;gap:clamp(8px,1.5vh,14px)}
+.span2{grid-column:1/-1}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:7px;padding:3px 11px 3px 3px;border-radius:999px;background:rgba(0,0,0,.25);border:1px solid var(--line);font-size:13px}
+.wait{text-align:center;color:var(--muted);padding:8px}
+#netStatus{text-align:center;color:var(--muted)}
+.tabs{display:flex;gap:6px;padding:4px;border-radius:14px;background:rgba(0,0,0,.3);border:1px solid var(--line);flex:0 0 auto}
+.tab{flex:1;padding:9px;border-radius:10px;font-family:"Kanit",sans-serif;font-weight:600;color:var(--muted)}
+.tab.on{background:linear-gradient(180deg,rgba(247,201,72,.3),rgba(247,201,72,.1));color:#fff;box-shadow:inset 0 0 0 1px rgba(247,201,72,.5)}
+.pane{display:none}.pane.on{display:block}
+.pane>*+*{margin-top:10px}
+.steps{list-style:none;padding:0;margin:0}
+.steps li{display:flex;gap:12px;align-items:flex-start;padding:10px 12px;border-radius:14px;background:rgba(0,0,0,.2);border:1px solid var(--line);line-height:1.5;font-size:14px}
+.steps li+li{margin-top:8px}
+.steps .num{flex:0 0 28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:"Kanit",sans-serif;font-weight:700;color:#3b2300;background:linear-gradient(180deg,#ffe592,#e0961a)}
+.info{padding:12px 14px;border-radius:14px;background:rgba(0,0,0,.2);border:1px solid var(--line);line-height:1.5;font-size:14px}
+.info b{font-family:"Kanit",sans-serif;color:#ffe08a}
+.tip{padding:12px 14px;border-radius:14px;background:linear-gradient(90deg,rgba(247,201,72,.16),transparent);border:1px solid rgba(247,201,72,.35);font-size:14px;line-height:1.5}
+.deck{--w:clamp(30px,5.4vh,52px);display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.stat{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.stat div{padding:clamp(10px,1.8vh,16px) 6px;border-radius:16px;background:rgba(0,0,0,.22);border:1px solid var(--line);text-align:center}
+.stat .si{font-size:22px}
+.stat b{display:block;font-family:"Kanit",sans-serif;font-size:clamp(24px,4vh,34px);font-weight:700;color:#ffd666}
+.stat span{color:var(--muted);font-size:12px}
+.ttab{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px}
+.ttab th,.ttab td{padding:6px 4px;border-bottom:1px solid var(--line);text-align:left}
+.ttab th{color:var(--muted);font-weight:500}
+.test-sum{padding:10px 12px;border-radius:12px;font-weight:600;margin-top:8px}
+.test-sum.ok{background:rgba(61,220,151,.15);border:1px solid rgba(61,220,151,.5)}
+.test-sum.bad{background:rgba(255,107,107,.15);border:1px solid rgba(255,107,107,.5)}
+
+@media (min-width:760px){.lobby{grid-template-columns:1fr 1.25fr}}
+@media (max-width:640px){
+  .chip-mode{display:none}
+  .felt{margin:14px 8px 12px !important;padding:10px;border-radius:24px}
+  .felt::before{border-radius:18px}
+  .field{flex-direction:column;align-items:stretch;gap:6px}
+  .modes .segb small{display:none}
+  .who b{font-size:13px}
+  .code-tiles span{width:40px;height:50px;font-size:24px}
+}
+@media (max-height:700px){.tile small{display:none}.sub{display:none}}
+@media (max-height:520px){
+  .me-h{display:none}.seat-h{height:24px}.av{width:24px;height:24px;font-size:13px}.meta{display:none}
+  .st span{display:none}.bar{padding:4px}.g>*+*{margin-top:6px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ===== v2: one-screen polish ===== */
+.hand{height:calc(var(--w,60px)*1.4 + 30px);padding-bottom:12px}
+.me{overflow:visible}
+.zl{white-space:nowrap}.zl::before,.zl::after{width:14px}
+.felt{margin:8px 10px 12px !important}
+.tgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:8px}
+.tchip{text-align:center;padding:4px 2px;border-radius:10px;background:rgba(61,220,151,.14);border:1px solid rgba(61,220,151,.4);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tchip.bad{background:rgba(255,107,107,.15);border-color:rgba(255,107,107,.5)}
+.fill{scrollbar-width:none}
+@media (max-height:760px) and (orientation:portrait){.panel{padding:8px 10px}.logo{font-size:clamp(46px,10vh,120px)}}
+@media (orientation:landscape) and (max-height:520px){
+  #settings .panel{padding:6px 10px}#settings .switch-row{padding:2px}#settings .panel h3{margin-bottom:2px;font-size:12px}#settings .fill{gap:6px}
+  .test-sum{margin-top:4px;padding:5px 10px;font-size:13px}.tgrid{margin-top:4px}#testOut .muted{margin:4px 0 0!important}
+  .switch-row{padding:5px 2px}.name-input{padding:7px 12px}.btn.sm{padding:6px 12px}.segb{padding:5px 4px}.segb.mode{padding:5px 4px}.screen{padding-top:calc(env(safe-area-inset-top,0px) + 6px);padding-bottom:calc(env(safe-area-inset-bottom,0px) + 6px)}.wrap>*+*{margin-top:6px}
+  #settings .fill>:last-child{grid-column:1/-1}#settings .fill>:last-child .muted{display:none}.segb small{display:none}.panel h3{margin-bottom:4px}.panel{padding:8px 10px}
+  .felt{margin:4px 8px 8px !important;padding:6px;border-radius:20px;box-shadow:inset 0 0 50px rgba(0,0,0,.55),0 0 0 4px #5d3618,0 0 0 6px #b07a3e,0 14px 24px -12px rgba(0,0,0,.9)}
+  .felt::before{display:none}.zl{height:14px;line-height:14px;margin-bottom:2px;font-size:11px}
+  .bar{padding:3px}.bar .btn.sm{padding:5px 10px}.bar .btn.icon{width:32px;height:32px}
+  .status{padding:2px 10px}.st b{font-size:13px}.seat{padding:4px 6px}
+  .me{padding:4px 8px}.hand{height:calc(var(--w,60px)*1.4 + 20px);padding-bottom:6px}
+  #solo .fill,#settings .fill{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-content:center}
+  #solo .fill>*,#settings .fill>*{margin:0!important}
+  .steps li{padding:5px 10px;font-size:12.5px}.steps li+li{margin-top:4px}.info,.tip{padding:7px 10px;font-size:12.5px}
+  .stat{gap:6px}.stat div{padding:6px}
+  .tabs .tab{padding:5px}.head h2{font-size:18px}.menu-wrap{flex-direction:row;flex-wrap:wrap}
+}
+</style>
+</head>
+<body>
+<div id="boot"><div>⏳ กำลังโหลดเกม...<br><br>ถ้าข้อความนี้ไม่หายไป แปลว่าหน้านี้ไม่อนุญาตให้รันสคริปต์<br>ให้บันทึกโค้ดเป็นไฟล์ <b>trio.html</b> แล้วเปิดด้วย Chrome หรือ Safari โดยตรง<br><small id="bootErr" style="color:#ff9b9b"></small></div></div>
+<div id="bg" aria-hidden="true"></div>
+<div id="toasts" aria-live="polite"></div>
+<main id="app">
+
+<!-- ================= MENU ================= -->
+<section id="menu" class="screen active">
+  <button type="button" class="btn ghost icon corner" data-action="toggle-sound" data-sound-ic aria-label="เปิด/ปิดเสียง">🔊</button>
+  <div class="wrap menu-wrap">
+    <div class="brand">
+      <h1 class="logo">TRIO</h1>
+      <div class="ribbon">จำเลข <i>✦</i> จับคู่ <i>✦</i> คว้าใจ</div>
+      <p class="sub">เกมไพ่จับคู่เลข ที่มากกว่าคือความจำและการสังเกต</p>
+    </div>
+    <div class="hero" id="hero"></div>
+    <nav class="tiles">
+      <button type="button" class="tile feature" data-action="nav" data-to="solo"><span class="ic" style="--a:#6af0b4;--b:#14915c">🤖</span><span class="tt"><b>เล่นคนเดียว</b><small>ประลองความจำกับบอท 3 ระดับ</small></span><span class="go">›</span></button>
+      <button type="button" class="tile" data-action="nav" data-to="online"><span class="ic" style="--a:#c9a6ff;--b:#6a35c4">🌐</span><span class="tt"><b>เล่นออนไลน์</b><small>สร้างห้อง เล่นกับเพื่อน</small></span></button>
+      <button type="button" class="tile" data-action="nav" data-to="howto"><span class="ic" style="--a:#ffc27a;--b:#d4661a">📖</span><span class="tt"><b>วิธีเล่น</b><small>เรียนรู้กติกาใน 1 นาที</small></span></button>
+      <button type="button" class="tile" data-action="nav" data-to="scores"><span class="ic" style="--a:#ffe592;--b:#d98b12">🏆</span><span class="tt"><b>สถิติ</b><small>ผลงานของคุณ</small></span></button>
+      <button type="button" class="tile" data-action="nav" data-to="settings"><span class="ic" style="--a:#9fb4c7;--b:#3f5566">⚙️</span><span class="tt"><b>ตั้งค่า</b><small>บอท ความเร็ว เสียง ทดสอบ</small></span></button>
+    </nav>
+  </div>
+</section>
+
+<!-- ================= SOLO ================= -->
+<section id="solo" class="screen"><div class="wrap">
+  <div class="head"><button type="button" class="btn ghost sm" data-action="nav" data-to="menu">‹ กลับ</button><h2>เล่นคนเดียว</h2></div>
+  <div class="fill">
+    <div class="panel"><label class="field"><span>ชื่อของคุณ</span><input class="name-input" maxlength="16" autocomplete="off"></label></div>
+    <div class="panel" id="soloPicker"></div>
+    <div class="panel"><h3>ระดับความจำของบอท</h3><div data-diff-seg></div></div>
+  </div>
+  <button type="button" class="btn big emerald" data-action="solo-start">▶ เริ่มเกม</button>
+</div></section>
+
+<!-- ================= ONLINE ================= -->
+<section id="online" class="screen"><div class="wrap">
+  <div class="head"><button type="button" class="btn ghost sm" data-action="leave-room">‹ กลับ</button><h2>เล่นออนไลน์</h2><span class="pill-tag">P2P</span></div>
+  <div class="fill">
+    <div id="onlineEntry" class="lobby">
+      <div class="panel span2"><label class="field"><span>ชื่อของคุณ</span><input class="name-input" maxlength="16" autocomplete="off"></label>
+        <p class="muted" style="margin:8px 0 0">3–6 ผู้เล่น • เชื่อมต่อตรงแบบ P2P (WebRTC) • ที่นั่งว่างเติมด้วยบอทอัตโนมัติ</p></div>
+      <div class="panel"><h3>สร้างห้องใหม่</h3><p class="muted" style="margin:0 0 12px">เป็นโฮสต์ แล้วแชร์รหัส 5 ตัวอักษรให้เพื่อน</p>
+        <button type="button" class="btn violet wide" data-action="create-room">✨ สร้างห้อง</button></div>
+      <div class="panel"><h3>เข้าร่วมห้อง</h3><input id="joinCode" class="code-input" maxlength="5" placeholder="A7G3K" autocomplete="off">
+        <button type="button" class="btn emerald wide" style="margin-top:10px" data-action="join-room">🔗 เข้าร่วม</button></div>
+    </div>
+    <div id="lobby" class="lobby" style="display:none">
+      <div class="panel">
+        <h3 style="text-align:center">รหัสห้อง</h3>
+        <div class="code-tiles" id="roomCode"></div>
+        <div class="row center"><button type="button" class="btn sm violet" data-action="share-room">📤 แชร์ลิงก์</button><button type="button" class="btn sm ghost" data-action="copy-code">📋 คัดลอกรหัส</button></div>
+        <h3 style="margin-top:14px">ผู้เล่นในห้อง</h3>
+        <div class="chips" id="plist"></div>
+      </div>
+      <div class="panel" id="hostControls"></div>
+      <div id="lobbyFoot" class="span2"></div>
+    </div>
+    <div id="netStatus"></div>
+  </div>
+</div></section>
+
+<!-- ================= HOW TO ================= -->
+<section id="howto" class="screen"><div class="wrap">
+  <div class="head"><button type="button" class="btn ghost sm" data-action="nav" data-to="menu">‹ กลับ</button><h2>วิธีเล่น</h2></div>
+  <div class="tabs"><button type="button" class="tab on" data-action="tab" data-tab="p1">กติกา</button><button type="button" class="tab" data-action="tab" data-tab="p2">โหมดเกม</button><button type="button" class="tab" data-action="tab" data-tab="p3">ไพ่ & เคล็ดลับ</button></div>
+  <div class="fill">
+    <div class="pane on" id="p1"><ol class="steps">
+      <li><span class="num">1</span><span>เล่นได้ 3–6 คน ใช้ไพ่ 36 ใบ (เลข 1–12 อย่างละ 3 ใบ)</span></li>
+      <li><span class="num">2</span><span>แจกไพ่: 3 คน 9 ใบ • 4 คน 7 ใบ • 5 คน 6 ใบ • 6 คน 5 ใบ ที่เหลือคว่ำกลางโต๊ะ ไพ่ในมือเรียงจากน้อยไปมาก</span></li>
+      <li><span class="num">3</span><span>ในตาของคุณ เปิดไพ่กลางโต๊ะ หรือให้ใครก็ได้ (รวมตัวเอง) เปิดใบ<b>ต่ำสุด</b>หรือ<b>สูงสุด</b>ในมือ</span></li>
+      <li><span class="num">4</span><span>เลขเหมือนกัน เปิดต่อได้ • ไม่เหมือนกัน จบตาและคว่ำไพ่กลับที่เดิม</span></li>
+      <li><span class="num">5</span><span>เปิดได้เลขเดียวกันครบ 3 ใบ = ได้ 1 Trio</span></li>
+    </ol></div>
+    <div class="pane" id="p2">
+      <div class="info">⭐ <b>มาตรฐาน</b> — ชนะด้วย 3 Trio หรือ Trio เลข 7</div>
+      <div class="info">🧠 <b>ขั้นสูง</b> — ชนะด้วย 2 Trio ที่บวกหรือลบกันได้ 7 (เช่น 3+4, 12−5) หรือ Trio เลข 7</div>
+      <div class="info">🤝 <b>ทีม</b> (4 หรือ 6 คน) — ทีมละ 2 คน นั่งสลับกัน รวม Trio กัน ทีมชนะด้วย 5 Trio หรือ Trio เลข 7</div>
+    </div>
+    <div class="pane" id="p3">
+      <div class="deck" id="deck"></div>
+      <div class="tip">💡 จำให้ได้ว่าใครถือเลขอะไร และไพ่กลางโต๊ะใบไหนเป็นเลขอะไร — ตามหาเลขน้อยให้ขอใบต่ำสุด ตามหาเลขมากให้ขอใบสูงสุด</div>
+      <div class="tip">🎯 ในเกม: แตะครึ่งซ้ายของไพ่คู่แข่ง = ใบต่ำสุด • ครึ่งขวา = ใบสูงสุด • ไพ่ที่ขอบทองกะพริบแตะเปิดได้เลย</div>
+    </div>
+  </div>
+</div></section>
+
+<!-- ================= SCORES ================= -->
+<section id="scores" class="screen"><div class="wrap">
+  <div class="head"><button type="button" class="btn ghost sm" data-action="nav" data-to="menu">‹ กลับ</button><h2>สถิติ</h2></div>
+  <div class="fill"><div class="panel"><div class="stat" id="stats"></div>
+    <div style="margin-top:14px;text-align:center"><button type="button" class="btn sm rose" data-action="reset-scores">🗑 รีเซ็ตสถิติ</button></div></div></div>
+</div></section>
+
+<!-- ================= SETTINGS ================= -->
+<section id="settings" class="screen"><div class="wrap">
+  <div class="head"><button type="button" class="btn ghost sm" data-action="nav" data-to="menu">‹ กลับ</button><h2>ตั้งค่า</h2></div>
+  <div class="fill">
+    <div class="panel"><label class="field"><span>ชื่อผู้เล่น</span><input class="name-input" maxlength="16" autocomplete="off"></label></div>
+    <div class="panel"><h3>ระดับความจำของบอท</h3><div data-diff-seg></div></div>
+    <div class="panel"><h3>ความเร็วเกม</h3><div data-speed-seg></div></div>
+    <div class="panel">
+      <button type="button" class="switch-row" data-action="toggle-sound"><span>🔊 เสียงเอฟเฟกต์</span><span class="sw" data-sw="sound"></span></button>
+      <button type="button" class="switch-row" data-action="toggle-music"><span>🎵 เพลงประกอบ (BGM)</span><span class="sw" data-sw="music"></span></button>
+    </div>
+    <div class="panel"><h3>ทดสอบระบบเกม</h3>
+      <p class="muted" style="margin:0 0 10px">ให้บอทเล่นจำลอง 200 เกม ครบทุกโหมดและทุกจำนวนผู้เล่น แล้วตรวจกติกา จำนวนไพ่ และผู้ชนะ</p>
+      <button type="button" class="btn sm violet" data-action="self-test">🧪 ทดสอบระบบ</button>
+      <div id="testOut"></div>
+    </div>
+  </div>
+</div></section>
+
+<!-- ================= GAME ================= -->
+<section id="game" class="screen">
+  <div class="g">
+    <header class="bar">
+      <button type="button" class="btn ghost sm" data-action="quit">☰ เมนู</button>
+      <div class="status" id="status"><span class="dot"></span><div class="st"><b id="stTurn"></b><span id="stMsg"></span></div></div>
+      <span class="chip-mode" id="modeChip"></span>
+      <button type="button" class="btn ghost icon" data-action="toggle-sound" data-sound-ic aria-label="เปิด/ปิดเสียง">🔊</button>
+    </header>
+    <div id="opps" class="opps"></div>
+    <div id="felt" class="felt">
+      <div class="zone z-mid"><div class="zl"><span>กองกลาง</span><em id="midCount"></em></div><div id="mid" class="mid"></div></div>
+      <div class="zone z-tray"><div class="zl"><span>เปิดในตานี้</span></div><div id="tray" class="tray"></div></div>
+    </div>
+    <div id="me" class="me">
+      <div class="me-h" id="meHead"></div>
+      <div class="me-row">
+        <button type="button" class="side" id="myLo" data-action="ask" data-side="low" aria-label="เปิดใบต่ำสุดของฉัน"><i>◂</i><span>ต่ำสุด</span></button>
+        <div id="hand" class="hand"></div>
+        <button type="button" class="side" id="myHi" data-action="ask" data-side="high" aria-label="เปิดใบสูงสุดของฉัน"><i>▸</i><span>สูงสุด</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="endModal"><div class="dialog">
+    <div id="endBody"></div>
+    <div class="row center">
+      <button type="button" class="btn emerald" data-action="rematch" id="rematchBtn">🔄 เล่นอีกครั้ง</button>
+      <button type="button" class="btn ghost" data-action="leave-game">🏠 กลับเมนู</button>
+    </div>
+  </div></div>
+
+  <div class="modal" id="quitModal"><div class="dialog">
+    <div class="q-ic">🚪</div><h2>ออกจากเกม?</h2><p class="muted" style="margin-bottom:0">ความคืบหน้าของเกมนี้จะหายไป</p>
+    <div class="row center">
+      <button type="button" class="btn ghost" data-action="quit-no">เล่นต่อ</button>
+      <button type="button" class="btn rose" data-action="quit-yes">ออกจากเกม</button>
+    </div>
+  </div></div>
+</section>
+</main>
+
+<script>
+(function(){
+'use strict';
+/* ---------- Boot: remove the "script blocked" notice ---------- */
+var bootEl=document.getElementById('boot');if(bootEl&&bootEl.parentNode)bootEl.parentNode.removeChild(bootEl);
+
+/* ---------- Utilities ---------- */
+const $=s=>document.querySelector(s);
+const $$=s=>Array.prototype.slice.call(document.querySelectorAll(s));
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t}return a}
+function wpick(o){if(!o.length)return null;let tot=0;o.forEach(x=>{tot+=x.w});let r=Math.random()*tot;for(const x of o){r-=x.w;if(r<=0)return x.a}return o[o.length-1].a}
+
+/* ---------- Toasts ---------- */
+function note(msg,cls,ms){
+  const box=document.getElementById('toasts');if(!box){console.warn(msg);return}
+  const d=document.createElement('div');d.className='toast '+cls;
+  const s=document.createElement('span');s.textContent=msg;
+  const b=document.createElement('button');b.type='button';b.textContent='✕';b.setAttribute('data-action','dismiss');
+  d.appendChild(s);d.appendChild(b);box.appendChild(d);
+  while(box.children.length>3)box.removeChild(box.firstChild);
+  setTimeout(()=>{if(d.parentNode)d.parentNode.removeChild(d)},ms);
+}
+const showError=m=>note('⚠️ '+m,'err',6500);
+const toast=m=>note(m,'info',3000);
+window.addEventListener('error',e=>{if(e&&e.message)showError(e.message)});
+window.addEventListener('unhandledrejection',e=>{const r=e.reason;showError((r&&r.message)||String(r))});
+
+/* ---------- Storage & settings ---------- */
+const store={get(k,d){try{const v=window.localStorage.getItem('trio_'+k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{window.localStorage.setItem('trio_'+k,JSON.stringify(v))}catch(e){}}};
+const settings=Object.assign({name:'ผู้เล่น',sound:true,music:true,diff:'normal',speed:'normal'},store.get('settings',{}));
+const saveSettings=()=>store.set('settings',settings);
+const EMPTY_STATS={played:0,won:0,trios:0,seven:0,streak:0,best:0};
+
+/* ---------- Constants ---------- */
+const HAND_SIZE={3:9,4:7,5:6,6:5};
+const MODE_NAMES={standard:'มาตรฐาน',advanced:'ขั้นสูง',team:'ทีม'};
+const MODE_IC={standard:'⭐',advanced:'🧠',team:'🤝'};
+const MODE_DESC={standard:'3 Trio หรือ Trio เลข 7',advanced:'2 Trio ที่ ±7 กัน หรือ Trio 7',team:'ทีมละ 2 • 5 Trio หรือ Trio 7'};
+const BOTS=[['บอทบีบี','🤖'],['บอทโรโบ','🦾'],['บอทพิกเซล','👾'],['บอทนัท','🐿️'],['บอทกุ๊กไก่','🐥']];
+const DIFFS=[['easy','🙂','ง่าย'],['normal','😐','ปกติ'],['hard','🧠','ยาก']];
+const SPEEDS=[['slow','🐢','ช้า'],['normal','🚶','ปกติ'],['fast','⚡','เร็ว']];
+const SKILL={easy:.4,normal:.72,hard:.96};
+const SPEED={slow:1.5,normal:1,fast:.55};
+const TEAM_L='ABC';
+const AVG=[['#ffd36b','#f08c00'],['#ff8a8a','#d6336c'],['#6ad5ff','#3b5bdb'],['#a3f07a','#2b8a3e'],['#cf9bff','#7048e8'],['#7ef0d0','#0ca678'],['#ffb3d9','#c2255c'],['#b5c7ff','#4c6ef5']];
+
+/* ---------- Sound (optional) ---------- */
+const Sound={ctx:null,timer:null,
+  init(){if(this.ctx)return;try{const AC=window.AudioContext||window.webkitAudioContext;if(AC)this.ctx=new AC()}catch(e){this.ctx=null}},
+  resume(){try{if(this.ctx&&this.ctx.state==='suspended'){const p=this.ctx.resume();if(p&&p.catch)p.catch(()=>{})}}catch(e){}},
+  unlock(){try{this.init();this.resume();this.startMusic()}catch(e){}},
+  tone(f,d,type,vol,delay){if(!this.ctx)return;try{const t=this.ctx.currentTime+(delay||0);const o=this.ctx.createOscillator(),g=this.ctx.createGain();
+    o.type=type||'sine';o.frequency.value=f;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol||.12,t+.02);
+    g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(this.ctx.destination);o.start(t);o.stop(t+d+.05)}catch(e){}},
+  play(n){if(!settings.sound)return;this.init();if(!this.ctx)return;this.resume();const T=(f,d,ty,v,dl)=>this.tone(f,d,ty,v,dl);
+    if(n==='click')T(660,.06,'triangle',.06);
+    else if(n==='flip'){T(520,.1,'triangle',.12);T(780,.08,'triangle',.08,.05)}
+    else if(n==='deal'){for(let k=0;k<8;k++)T(380+k*45,.05,'triangle',.05,k*.06)}
+    else if(n==='match')[660,880].forEach((f,i)=>T(f,.15,'sine',.15,i*.08));
+    else if(n==='fail'){T(300,.2,'sawtooth',.06);T(210,.3,'sawtooth',.06,.12)}
+    else if(n==='trio')[523,659,784,1047].forEach((f,i)=>T(f,.25,'triangle',.15,i*.09));
+    else if(n==='win')[523,659,784,1047,784,1047].forEach((f,i)=>T(f,.3,'square',.07,i*.14));
+    else if(n==='lose')[392,330,262].forEach((f,i)=>T(f,.32,'triangle',.08,i*.16));
+    else if(n==='myturn')T(880,.12,'sine',.1)},
+  startMusic(){if(this.timer||!settings.music||!settings.sound)return;this.init();if(!this.ctx)return;
+    const N=[262,330,392,330,294,349,440,349,262,330,392,523,392,330,294,247];let i=0;
+    this.timer=setInterval(()=>{if(!settings.music||!settings.sound||document.hidden){if(!settings.music||!settings.sound)this.stopMusic();return}
+      this.tone(N[i%N.length],.35,'sine',.03);if(i%4===0)this.tone(N[i%N.length]/2,.8,'triangle',.025);i++},380)},
+  stopMusic(){clearInterval(this.timer);this.timer=null}
+};
+
+/* =========================================================
+   GAME ENGINE (pure rules, no timers, no DOM)
+   ========================================================= */
+class Game{
+  constructor(players,mode,opts){
+    opts=opts||{};const n=players.length;
+    if(n<3||n>6)throw new Error('จำนวนผู้เล่นต้องอยู่ระหว่าง 3–6 คน');
+    if(!MODE_NAMES[mode])throw new Error('โหมดเกมไม่ถูกต้อง');
+    if(mode==='team'&&n!==4&&n!==6)throw new Error('โหมดทีมต้องมีผู้เล่น 4 หรือ 6 คน');
+    this.n=n;this.mode=mode;this.fixedSkill=opts.skill||0;
+    this.gid=Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+    this.cards=[];
+    for(let v=1;v<=12;v++)for(let k=0;k<3;k++)this.cards.push({id:this.cards.length,v:v,up:false,gone:false,loc:'mid',owner:-1});
+    const ids=shuffle(this.cards.map(c=>c.id)),hs=HAND_SIZE[n];
+    this.players=players.map((p,i)=>{
+      const hand=ids.splice(0,hs).sort((a,b)=>this.cards[a].v-this.cards[b].v||a-b);
+      hand.forEach(id=>{this.cards[id].loc='hand';this.cards[id].owner=i});
+      return {name:String(p.name||'ผู้เล่น').slice(0,24),type:p.type||'bot',av:p.av||'🧑',hand:hand,trios:[],team:mode==='team'?i%(n/2):i,mem:{}};
+    });
+    this.middle=ids;
+    this.turn=Math.floor(Math.random()*n);
+    this.revealed=[];this.phase='play';this.pending=null;this.pendingWin=null;this.winner=null;
+    this.turns=1;this.firstMove=true;this.ev={seq:1,name:'start'};
+    this.msg=this.players[this.turn].name+' เริ่มก่อน';
+  }
+  skill(){return this.fixedSkill||SKILL[settings.diff]||.72}
+  emit(name){this.ev={seq:this.ev.seq+1,name:name}}
+  lowId(p){const h=this.players[p].hand;for(let i=0;i<h.length;i++)if(!this.cards[h[i]].up)return h[i];return null}
+  highId(p){const h=this.players[p].hand;for(let i=h.length-1;i>=0;i--)if(!this.cards[h[i]].up)return h[i];return null}
+  midOk(i){const id=this.middle[i];return id!=null&&!this.cards[id].gone&&!this.cards[id].up}
+  legal(a){
+    if(!a||typeof a!=='object')return null;
+    if(a.type==='mid'){const i=Number(a.i);return (Number.isInteger(i)&&i>=0&&i<this.middle.length&&this.midOk(i))?this.middle[i]:null}
+    if(a.type==='hand'){const p=Number(a.p);if(!(Number.isInteger(p)&&p>=0&&p<this.n))return null;
+      if(a.side==='low')return this.lowId(p);if(a.side==='high')return this.highId(p);return null}
+    return null}
+  act(p,a){
+    if(this.phase!=='play'||p!==this.turn)return false;
+    const id=this.legal(a);if(id==null)return false;
+    const isHand=a.type==='hand',tp=isHand?Number(a.p):-1,side=isHand?a.side:null;
+    const c=this.cards[id];c.up=true;this.firstMove=false;
+    this.revealed.push({id:id,v:c.v,src:isHand?'hand':'mid',p:tp,side:side});
+    this.observe(id);
+    const who=this.players[p].name;
+    const where=!isHand?'ไพ่กลางโต๊ะ':('ใบ'+(side==='low'?'ต่ำสุด':'สูงสุด')+(tp===p?'ของตัวเอง':'ของ '+this.players[tp].name));
+    this.msg=who+' เปิด'+where+' ได้เลข '+c.v;
+    const vals=this.revealed.map(r=>r.v);
+    if(vals.some(x=>x!==vals[0])){this.phase='resolve';this.pending='fail';this.msg+=' — ไม่ตรงกัน จบตา';this.emit('fail')}
+    else if(vals.length===3){this.phase='resolve';this.pending='trio';this.collect(p,vals[0]);this.pendingWin=this.checkWin(p);this.msg='🎉 '+who+' ได้ Trio เลข '+vals[0]+'!';this.emit('trio')}
+    else if(vals.length===2){this.msg+=' — ตรงกัน! เปิดต่อได้';this.emit('match')}
+    else this.emit('flip');
+    return true;
+  }
+  resolve(){
+    if(this.phase!=='resolve')return false;
+    if(this.pending==='fail'){
+      this.revealed.forEach(r=>{const c=this.cards[r.id];if(!c.gone)c.up=false});
+      this.revealed=[];this.pending=null;this.nextTurn();return true}
+    this.revealed=[];this.pending=null;
+    const w=this.pendingWin;this.pendingWin=null;
+    if(w)this.finish(w);else if(this.cards.every(c=>c.gone))this.finishByCount();else this.nextTurn();
+    return true;
+  }
+  observe(id){const v=this.cards[id].v,sk=this.skill();this.players.forEach(pl=>{if(pl.type==='bot'&&Math.random()<sk)pl.mem[id]=v})}
+  collect(p,v){
+    const ids=this.revealed.map(r=>r.id);
+    ids.forEach(id=>{const c=this.cards[id];c.gone=true;c.up=false;
+      if(c.loc==='hand'){const h=this.players[c.owner].hand,k=h.indexOf(id);if(k>=0)h.splice(k,1)}});
+    this.players[p].trios.push(v);
+    this.players.forEach(pl=>ids.forEach(id=>{delete pl.mem[id]}));
+  }
+  members(t){const r=[];for(let i=0;i<this.n;i++)if(this.players[i].team===t)r.push(i);return r}
+  checkWin(p){
+    if(this.mode==='team'){const t=this.players[p].team;let tr=[];this.members(t).forEach(i=>{tr=tr.concat(this.players[i].trios)});
+      if(tr.indexOf(7)>=0)return {team:t,reason:'ทีมได้ Trio เลข 7'};if(tr.length>=5)return {team:t,reason:'ทีมได้ครบ 5 Trio'};return null}
+    const t2=this.players[p].trios;if(t2.indexOf(7)>=0)return {p:p,reason:'ได้ Trio เลข 7'};
+    if(this.mode==='standard'&&t2.length>=3)return {p:p,reason:'ได้ครบ 3 Trio'};
+    if(this.mode==='advanced')for(let i=0;i<t2.length;i++)for(let j=i+1;j<t2.length;j++){const a=t2[i],b=t2[j];
+      if(a+b===7||Math.abs(a-b)===7)return {p:p,reason:'Trio '+a+' กับ '+b+' เชื่อมโยงกัน ('+(a+b===7?a+'+'+b:Math.max(a,b)+'−'+Math.min(a,b))+'=7)'}}
+    return null;
+  }
+  finish(w){this.phase='over';const ps=w.team!=null?this.members(w.team):[w.p];
+    this.winner={players:ps,reason:w.reason,team:w.team!=null?w.team:null};
+    this.msg='🏆 '+ps.map(i=>this.players[i].name).join(' & ')+' ชนะ! ('+w.reason+')';this.emit('win')}
+  finishByCount(){
+    const groups={};
+    this.players.forEach((pl,i)=>{const k=this.mode==='team'?pl.team:i;groups[k]=groups[k]||{ps:[],n:0};groups[k].ps.push(i);groups[k].n+=pl.trios.length});
+    const arr=Object.keys(groups).map(k=>groups[k]);const max=Math.max.apply(null,arr.map(g=>g.n));
+    let ps=[];arr.forEach(g=>{if(g.n===max)ps=ps.concat(g.ps)});
+    this.phase='over';this.winner={players:ps,reason:'ไพ่หมดกระดาน – ได้ Trio มากที่สุด',team:null};
+    this.msg='🏆 ไพ่หมดแล้ว!';this.emit('win')}
+  nextTurn(){
+    const f=(1-this.skill())*.22;
+    this.players.forEach(pl=>{if(pl.type!=='bot')return;Object.keys(pl.mem).forEach(id=>{if(Math.random()<f)delete pl.mem[id]})});
+    this.turn=(this.turn+1)%this.n;this.turns++;this.phase='play';this.msg='ตาของ '+this.players[this.turn].name;this.emit('turn')}
+  anyLegal(){const L=[];
+    this.middle.forEach((_,i)=>{if(this.midOk(i))L.push({type:'mid',i:i})});
+    for(let p=0;p<this.n;p++){if(this.lowId(p)!=null)L.push({type:'hand',p:p,side:'low'});if(this.highId(p)!=null)L.push({type:'hand',p:p,side:'high'})}
+    return L.length?pick(L):null}
+  /* ---- Bot AI: remembers individual cards ---- */
+  knows(b,id){const c=this.cards[id];if(c.gone)return undefined;if(c.up)return c.v;if(c.loc==='hand'&&c.owner===b)return c.v;return this.players[b].mem[id]}
+  access(id){const c=this.cards[id];if(c.gone||c.up)return null;
+    if(c.loc==='mid'){const i=this.middle.indexOf(id);return i>=0?{type:'mid',i:i}:null}
+    const p=c.owner;if(this.lowId(p)===id)return {type:'hand',p:p,side:'low'};if(this.highId(p)===id)return {type:'hand',p:p,side:'high'};return null}
+  findAccess(b,v){const opts=[];for(const c of this.cards){if(c.gone||c.up||this.knows(b,c.id)!==v)continue;const a=this.access(c.id);if(a)opts.push(a)}return opts.length?pick(opts):null}
+  reach(b,v){let n=0;
+    this.middle.forEach(id=>{const c=this.cards[id];if(!c.gone&&!c.up&&this.knows(b,id)===v)n++});
+    for(let p=0;p<this.n;p++){const h=this.players[p].hand.filter(id=>!this.cards[id].up);
+      let lo=0;for(let i=0;i<h.length;i++){if(this.knows(b,h[i])===v)lo++;else break}
+      let hi=0;for(let k=h.length-1;k>=lo;k--){if(this.knows(b,h[k])===v)hi++;else break}
+      n+=lo+hi}
+    return n}
+  guess(b,target){const o=[];
+    this.middle.forEach((id,i)=>{if(this.midOk(i)&&this.knows(b,id)===undefined)o.push({a:{type:'mid',i:i},w:1.2})});
+    for(let p=0;p<this.n;p++){if(p===b)continue;const lo=this.lowId(p),hi=this.highId(p);
+      if(lo!=null&&this.knows(b,lo)===undefined)o.push({a:{type:'hand',p:p,side:'low'},w:target==null?1:target<=4?2.4:target<=6?1:.3});
+      if(hi!=null&&hi!==lo&&this.knows(b,hi)===undefined)o.push({a:{type:'hand',p:p,side:'high'},w:target==null?1:target>=9?2.4:target>=7?1:.3})}
+    return wpick(o)}
+  botChoose(b){
+    const sk=this.skill();if(Math.random()<(1-sk)*.15)return this.anyLegal();
+    const target=this.revealed.length?this.revealed[0].v:null;
+    if(target!==null)return this.findAccess(b,target)||this.guess(b,target)||this.anyLegal();
+    const myTr=this.players[b].trios;let best=null,bs=-1;
+    for(let v=1;v<=12;v++){const r=this.reach(b,v);if(!r)continue;
+      let s=Math.min(3,r)+(v===7?.6:0)+Math.random()*.3;
+      if(this.mode==='advanced'&&myTr.some(t=>t+v===7||Math.abs(t-v)===7))s+=.8;
+      if(s>bs){bs=s;best=v}}
+    if(best!==null){const rr=this.reach(b,best);if(rr>=3||(rr>=2&&Math.random()<.75)){const a=this.findAccess(b,best);if(a)return a}}
+    return this.guess(b,null)||(best!==null&&this.findAccess(b,best))||this.anyLegal()}
+  viewFor(me){
+    return {gid:this.gid,me:me,n:this.n,mode:this.mode,turn:this.turn,phase:this.phase,msg:this.msg,ev:this.ev,winner:this.winner,
+      middle:this.middle.map(id=>{const c=this.cards[id];return c.gone?{s:'gone'}:c.up?{s:'up',v:c.v}:{s:'down'}}),
+      players:this.players.map((pl,i)=>{let lo=-1,hi=-1;pl.hand.forEach((id,k)=>{if(!this.cards[id].up){if(lo<0)lo=k;hi=k}});
+        return {name:pl.name,type:pl.type,av:pl.av,team:pl.team,trios:pl.trios.slice(),lo:lo,hi:hi,canLow:lo>=0,canHigh:hi>=0,
+          hand:pl.hand.map(id=>{const c=this.cards[id];return (i===me||c.up)?{v:c.v,up:c.up}:{up:false}})}}),
+      revealed:this.revealed.map(r=>({v:r.v,src:r.src,p:r.p,side:r.side}))};
+  }
+}
+
+/* =========================================================
+   SELF-TEST
+   ========================================================= */
+function checkInvariants(g){
+  let gone=0;g.cards.forEach(c=>{if(c.gone)gone++});
+  let tri=0;g.players.forEach(p=>{tri+=p.trios.length});
+  if(gone!==tri*3)throw new Error('จำนวนไพ่ที่เก็บไม่ตรงกับ Trio');
+  for(let v=1;v<=12;v++){const gv=g.cards.filter(c=>c.v===v&&c.gone).length;if(gv!==0&&gv!==3)throw new Error('เก็บไพ่เลข '+v+' ไม่ครบชุด')}
+  let inHand=0;
+  g.players.forEach((p,i)=>{p.hand.forEach((id,k)=>{const c=g.cards[id];inHand++;
+    if(c.gone||c.loc!=='hand'||c.owner!==i)throw new Error('ไพ่ในมือผิดสถานะ');
+    if(k&&g.cards[p.hand[k-1]].v>c.v)throw new Error('ไพ่ในมือเรียงผิด')})});
+  const midAlive=g.middle.filter(id=>!g.cards[id].gone).length;
+  if(inHand+midAlive+gone!==36)throw new Error('จำนวนไพ่รวมไม่เท่ากับ 36');
+  if(g.revealed.length>3)throw new Error('เปิดไพ่เกิน 3 ใบ');
+}
+function verifyWin(g){
+  const w=g.winner;if(/ไพ่หมด/.test(w.reason))return;
+  let tr=[];w.players.forEach(i=>{tr=tr.concat(g.players[i].trios)});
+  if(tr.indexOf(7)>=0)return;
+  if(g.mode==='standard'&&w.players.length===1&&tr.length>=3)return;
+  if(g.mode==='team'&&tr.length>=5)return;
+  if(g.mode==='advanced'&&tr.some(a=>tr.some(b=>a!==b&&(a+b===7||Math.abs(a-b)===7))))return;
+  throw new Error('ผู้ชนะไม่ตรงเงื่อนไขกติกา');
+}
+function simulate(mode,n){
+  const ps=[];for(let i=0;i<n;i++)ps.push({name:'B'+i,type:'bot'});
+  const g=new Game(ps,mode,{skill:.72});let steps=0;
+  while(g.phase!=='over'){
+    if(++steps>6000)throw new Error('เกมไม่จบภายใน 6000 ขั้น');
+    if(g.phase==='play'){
+      if(g.act((g.turn+1)%n,{type:'mid',i:0}))throw new Error('ผู้เล่นที่ไม่ใช่ตาตัวเองเปิดไพ่ได้');
+      if(g.act(g.turn,{type:'hand',p:99,side:'low'}))throw new Error('ตาเดินผิดกติกาถูกยอมรับ');
+      const b=g.turn,a=g.botChoose(b);
+      if(!a||!g.act(b,a)){const f=g.anyLegal();if(!f)throw new Error('ไม่มีตาเดินที่ถูกกติกา');if(!g.act(b,f))throw new Error('ตาเดินถูกปฏิเสธ')}
+    }else{
+      if(g.act(g.turn,{type:'mid',i:0}))throw new Error('เปิดไพ่ได้ระหว่างรอสรุปผล');
+      g.resolve();
+    }
+    checkInvariants(g);
+    if(steps%20===0){const vw=g.viewFor(0);for(let p=1;p<n;p++)if(vw.players[p].hand.some(c=>!c.up&&c.v!==undefined))throw new Error('ข้อมูลไพ่คู่แข่งรั่ว')}
+  }
+  if(!g.winner||!g.winner.players.length)throw new Error('จบเกมแต่ไม่มีผู้ชนะ');
+  verifyWin(g);
+  return {turns:g.turns,seven:g.winner.reason.indexOf('เลข 7')>=0};
+}
+let testing=false;
+function selfTest(btn){
+  if(testing)return;testing=true;btn.disabled=true;
+  const out=$('#testOut'),G=20,t0=Date.now();let bad=0,rows='',ci=0;
+  const cfgs=[['standard',3],['standard',4],['standard',5],['standard',6],['advanced',3],['advanced',4],['advanced',5],['advanced',6],['team',4],['team',6]];
+  const head='<div class="tgrid">';
+  out.innerHTML='<div class="muted" style="margin-top:8px">กำลังทดสอบ...</div>';
+  function step(){
+    try{
+      const mode=cfgs[ci][0],n=cfgs[ci][1];let ok=0,err=0,turns=0,seven=0,msg='';
+      for(let k=0;k<G;k++){try{const r=simulate(mode,n);ok++;turns+=r.turns;if(r.seven)seven++}catch(e){err++;msg=e.message}}
+      bad+=err;
+      rows+='<span class="tchip'+(err?' bad':'')+'" title="'+esc(msg)+'">'+MODE_IC[mode]+n+' '+(err?'❌':'✅')+'</span>';
+      ci++;
+      if(ci<cfgs.length){out.innerHTML='<div class="muted" style="margin-top:8px">ทดสอบแล้ว '+ci+'/'+cfgs.length+' ชุด...</div>'+head+rows+'</div>';setTimeout(step,0);return}
+      out.innerHTML='<div class="test-sum '+(bad?'bad':'ok')+'">'+(bad?'❌ พบปัญหา '+bad+' เกม':'✅ ผ่านทั้งหมด '+(cfgs.length*G)+' เกม')+' • '+(Date.now()-t0)+' ms</div>'+head+rows+'</div>';
+    }catch(e){showError('ทดสอบไม่สำเร็จ: '+e.message)}
+    testing=false;btn.disabled=false;
+  }
+  setTimeout(step,30);
+}
+
+/* =========================================================
+   APP STATE + CONTROLLER (all timing lives here)
+   ========================================================= */
+const App={game:null,role:'solo',me:0,view:null,soloCfg:{count:4,mode:'standard'},onlineCfg:{count:4,mode:'standard'},recorded:null};
+const Ctl={timers:[],
+  clear(){this.timers.forEach(clearTimeout);this.timers=[]},
+  later(fn,ms){const id=setTimeout(()=>{this.timers=this.timers.filter(x=>x!==id);try{fn()}catch(e){console.error(e);showError(e.message)}},ms*(SPEED[settings.speed]||1));this.timers.push(id)},
+  update(g){
+    if(g!==App.game)return;
+    publish(g);
+    if(g.phase==='resolve'&&!g._res){
+      g._res=true;
+      this.later(()=>{if(g!==App.game)return;g._res=false;g.resolve();this.update(g)},g.pending==='fail'?1700:1600);
+    }else if(g.phase==='play'&&g.players[g.turn].type==='bot'&&!g._bot){
+      g._bot=true;const extra=g.firstMove?1500:0;
+      this.later(()=>{
+        if(g!==App.game)return;g._bot=false;
+        if(g.phase!=='play'||g.players[g.turn].type!=='bot')return;
+        const b=g.turn;let a=null;try{a=g.botChoose(b)}catch(e){console.error(e)}
+        if(!a||!g.act(b,a)){const f=g.anyLegal();if(f)g.act(b,f)}
+        this.update(g);
+      },850+Math.random()*550+extra);
+    }
+  }
+};
+function publish(g){render(g.viewFor(0));if(App.role==='host')Net.broadcastViews(g)}
+function show(id){$$('.screen').forEach(s=>{s.classList.toggle('active',s.id===id)});if(id==='game')fitSoon()}
+function showModal(id){const m=document.getElementById(id);if(m)m.classList.add('show')}
+function hideModal(id){const m=document.getElementById(id);if(m)m.classList.remove('show')}
+
+/* =========================================================
+   UI HELPERS
+   ========================================================= */
+function cardHTML(o){
+  const tag=o.tag||'div',inner=o.back?'':'<i class="cn">'+o.v+'</i><b class="n">'+o.v+'</b><i class="cn b">'+o.v+'</i>';
+  return '<'+tag+(tag==='button'?' type="button"':'')+' class="card '+(o.back?'back':'c'+o.v)+' '+(o.cls||'')+'"'+(o.style?' style="'+o.style+'"':'')+(o.attrs?' '+o.attrs:'')+'>'+inner+'</'+tag+'>';
+}
+function avHTML(pl,i,isMe,small){const g=AVG[i%AVG.length];return '<div class="av'+(small?' s':'')+'" style="--a:'+g[0]+';--b:'+g[1]+'">'+(isMe?'😎':esc(pl.av||'🧑'))+'</div>'}
+function pips(n,m){let s='<span class="pips">';for(let k=0;k<m;k++)s+='<i class="'+(k<n?'on':'')+'"></i>';return s+'</span>'}
+function progHTML(v,i){const pl=v.players[i];
+  if(v.mode==='team'){let n=0;v.players.forEach(x=>{if(x.team===pl.team)n+=x.trios.length});return pips(n,5)+'<span>'+n+'/5</span>'}
+  if(v.mode==='standard')return pips(pl.trios.length,3)+'<span>'+pl.trios.length+'/3</span>';
+  return '<span>'+pl.trios.length+' Trio</span>'}
+function trioHTML(t,compact){return t.length?t.map(v=>'<span class="tb c'+v+'">'+v+'</span>').join(''):(compact?'':'<span class="muted">ยังไม่มี Trio</span>')}
+function teamTag(pl,v,partner){return v.mode==='team'?'<span class="team t'+pl.team+'">'+(partner?'คู่หู':'ทีม '+TEAM_L[pl.team])+'</span>':''}
+function fxBanner(title,sub,cls){
+  $$('.fxb').forEach(x=>x.remove());
+  const d=document.createElement('div');d.className='fxb '+(cls||'');
+  d.innerHTML='<b>'+esc(title)+'</b>'+(sub?'<span>'+esc(sub)+'</span>':'');
+  document.body.appendChild(d);setTimeout(()=>d.remove(),1600)}
+function confetti(){const C=['#ffd666','#ff7f7f','#64b0ff','#68e294','#c39bff','#ff8fc6','#ffbb66'];
+  for(let k=0;k<90;k++){const e=document.createElement('i');e.className='confetti';
+    e.setAttribute('style','--x:'+(Math.random()*100)+'vw;--c:'+pick(C)+';--d:'+(2.2+Math.random()*1.8)+'s;--dl:'+(Math.random()*.6)+'s;--rot:'+(Math.random()*900-450)+'deg;--dx:'+(Math.random()*200-100)+'px');
+    document.body.appendChild(e);setTimeout(()=>e.remove(),5200)}}
+function burst(){const C=['#ffe08a','#ffd666','#ffffff','#f7c948','#ffb347'];
+  for(let k=0;k<28;k++){const e=document.createElement('i');e.className='spark';const a=Math.random()*Math.PI*2,d=80+Math.random()*170;
+    e.setAttribute('style','--dx:'+(Math.cos(a)*d).toFixed(0)+'px;--dy:'+(Math.sin(a)*d).toFixed(0)+'px;--c:'+pick(C));
+    document.body.appendChild(e);setTimeout(()=>e.remove(),1000)}}
+function clearFx(){$$('.fxb,.confetti,.spark').forEach(e=>e.remove())}
+
+function segHTML(action,opts,cur){return '<div class="seg">'+opts.map(o=>'<button type="button" class="segb'+(cur===o[0]?' on':'')+'" data-action="'+action+'" data-val="'+o[0]+'"><b>'+o[1]+' '+o[2]+'</b></button>').join('')+'</div>'}
+function renderPicker(el,cfg,scope,minCount,readonly){
+  if(!el)return;
+  let h='<h3>จำนวนผู้เล่น (รวมบอท)</h3><div class="seg">';
+  [3,4,5,6].forEach(n=>{h+='<button type="button" class="segb'+(cfg.count===n?' on':'')+'" data-action="pick-count" data-scope="'+scope+'" data-n="'+n+'"'+((n<(minCount||3)||readonly)?' disabled':'')+'><b>'+n+' คน</b><small>'+HAND_SIZE[n]+' ใบ/คน</small></button>'});
+  h+='</div><h3 style="margin-top:12px">โหมดเกม</h3><div class="modes">';
+  ['standard','advanced','team'].forEach(m=>{h+='<button type="button" class="segb mode'+(cfg.mode===m?' on':'')+'" data-action="pick-mode" data-scope="'+scope+'" data-m="'+m+'"'+(readonly?' disabled':'')+'><span class="mi">'+MODE_IC[m]+'</span><b>'+MODE_NAMES[m]+'</b><small>'+MODE_DESC[m]+'</small></button>'});
+  el.innerHTML=h+'</div>';
+}
+function refreshUI(){
+  $$('[data-diff-seg]').forEach(el=>{el.innerHTML=segHTML('set-diff',DIFFS,settings.diff)});
+  $$('[data-speed-seg]').forEach(el=>{el.innerHTML=segHTML('set-speed',SPEEDS,settings.speed)});
+  $$('.name-input').forEach(el=>{if(document.activeElement!==el)el.value=settings.name});
+  $$('[data-sound-ic]').forEach(el=>{el.textContent=settings.sound?'🔊':'🔇'});
+  $$('[data-sw]').forEach(el=>{el.classList.toggle('on',!!settings[el.getAttribute('data-sw')])});
+  renderPicker($('#soloPicker'),App.soloCfg,'solo');
+}
+function renderStats(){const s=Object.assign({},EMPTY_STATS,store.get('stats',{}));const rate=s.played?Math.round(s.won/s.played*100):0;
+  $('#stats').innerHTML=[['🎮','เกมที่เล่น',s.played],['🏆','ชนะ',s.won],['📈','อัตราชนะ',rate+'%'],['🃏','Trio ทั้งหมด',s.trios],['✨','Trio เลข 7',s.seven],['🔥','ชนะติดกันสูงสุด',s.best]]
+    .map(x=>'<div><div class="si">'+x[0]+'</div><b>'+x[2]+'</b><span>'+x[1]+'</span></div>').join('')}
+function recordResult(v){if(App.recorded===v.gid||!v.winner)return;App.recorded=v.gid;
+  const s=Object.assign({},EMPTY_STATS,store.get('stats',{}));const me=v.players[v.me];
+  s.played++;s.trios+=me.trios.length;if(me.trios.indexOf(7)>=0)s.seven++;
+  if(v.winner.players.indexOf(v.me)>=0){s.won++;s.streak++;s.best=Math.max(s.best,s.streak)}else s.streak=0;store.set('stats',s)}
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+let lastSeq=-1,lastGid=null,prevUp={},endShownFor=null,dealT=0;
+function handleEvent(v){
+  if(!v.ev||v.ev.seq===lastSeq)return;lastSeq=v.ev.seq;const n=v.ev.name;
+  if(n==='start'){Sound.play('deal');fxBanner('เริ่มเกม!',v.turn===v.me?'คุณได้เริ่มก่อน':v.players[v.turn].name+' เริ่มก่อน','sm')}
+  else if(n==='turn'){if(v.turn===v.me){Sound.play('myturn');fxBanner('ตาของคุณ!','','sm')}}
+  else if(n==='flip')Sound.play('flip');
+  else if(n==='match'){Sound.play('match');fxBanner('ตรงกัน!','เปิดใบที่ 3 ต่อได้','sm good')}
+  else if(n==='fail'){Sound.play('fail');fxBanner('ไม่ตรงกัน','','sm bad')}
+  else if(n==='trio'){Sound.play('trio');const r=v.revealed[0];fxBanner('TRIO!',(r?'เลข '+r.v+' × 3 • ':'')+v.players[v.turn].name);burst()}
+  else if(n==='win'){const won=v.winner&&v.winner.players.indexOf(v.me)>=0;Sound.play(won?'win':'lose');if(won)confetti()}
+}
+function render(v){
+  App.view=v;
+  const gs=$('#game'),isNew=v.gid!==lastGid;
+  if(isNew){lastGid=v.gid;lastSeq=-1;prevUp={};endShownFor=null;hideModal('endModal');hideModal('quitModal');clearFx();
+    gs.classList.add('dealing');clearTimeout(dealT);dealT=setTimeout(()=>gs.classList.remove('dealing'),1600)}
+  if(!gs.classList.contains('active'))show('game');
+  handleEvent(v);
+  const myTurn=v.phase==='play'&&v.turn===v.me,upNow={};let di=0;
+  const fl=k=>{upNow[k]=1;return prevUp[k]?'':' flip'};
+  // top bar
+  $('#modeChip').textContent=MODE_IC[v.mode]+' โหมด'+MODE_NAMES[v.mode]+' • '+v.n+' คน';
+  $('#status').classList.toggle('mine',myTurn);
+  $('#stTurn').textContent=v.phase==='over'?'🏁 จบเกม':myTurn?'ตาของคุณ — แตะไพ่ขอบทองเพื่อเปิด':'ตาของ '+v.players[v.turn].name;
+  $('#stMsg').textContent=v.msg||'';
+  // opponents
+  const meTeam=v.players[v.me].team;let oh='';
+  for(let k=1;k<v.n;k++){
+    const i=(v.me+k)%v.n,pl=v.players[i],isT=v.turn===i&&v.phase!=='over',partner=v.mode==='team'&&pl.team===meTeam;
+    let cards='';
+    pl.hand.forEach((c,ci)=>{const st='--i:'+(di++);
+      if(c.up)cards+=cardHTML({v:c.v,cls:'lit'+fl('h'+i+'-'+ci+'-'+c.v),style:st});
+      else cards+=cardHTML({back:true,cls:(myTurn&&(ci===pl.lo||ci===pl.hi))?'pick':'',style:st})});
+    const zl=(myTurn&&pl.canLow)?'<button type="button" class="zb lo" data-action="ask" data-p="'+i+'" data-side="low" aria-label="ให้ '+esc(pl.name)+' เปิดใบต่ำสุด"><span>◂ ต่ำสุด</span></button>':'';
+    const zh=(myTurn&&pl.canHigh)?'<button type="button" class="zb hi" data-action="ask" data-p="'+i+'" data-side="high" aria-label="ให้ '+esc(pl.name)+' เปิดใบสูงสุด"><span>สูงสุด ▸</span></button>':'';
+    oh+='<div class="seat'+(isT?' turn':'')+(v.mode==='team'?' tm'+pl.team:'')+'">'+
+      '<div class="seat-h">'+avHTML(pl,i,false)+'<div class="who"><b>'+esc(pl.name)+'</b><div class="meta">'+teamTag(pl,v,partner)+progHTML(v,i)+'</div></div><div class="trios">'+trioHTML(pl.trios,true)+'</div></div>'+
+      '<div class="fan-wrap"><div class="fan" data-n="'+Math.max(1,pl.hand.length)+'">'+(cards||'<span class="muted">หมดมือ</span>')+'</div>'+zl+zh+'</div></div>';
+  }
+  $('#opps').innerHTML=oh;
+  // middle
+  const mid=$('#mid');mid.classList.toggle('live',myTurn);
+  let mh='',alive=0;
+  v.middle.forEach((m,i)=>{
+    if(m.s==='gone'){mh+='<div class="hole"></div>';return}
+    alive++;
+    if(m.s==='up'){mh+=cardHTML({v:m.v,cls:'lit'+fl('m'+i)});return}
+    mh+=cardHTML({back:true,tag:'button',cls:myTurn?'tap':'',style:'--i:'+(di++),attrs:'data-action="mid" data-i="'+i+'" aria-label="เปิดไพ่กลางโต๊ะ"'+(myTurn?'':' disabled')});
+  });
+  mid.innerHTML=mh;$('#midCount').textContent=alive+' ใบ';
+  // tray
+  let tr='';
+  for(let t=0;t<3;t++){const r=v.revealed[t];
+    if(r){const src=r.src==='mid'?'กลางโต๊ะ':(r.p===v.me?'คุณ':v.players[r.p].name)+(r.side==='low'?' ◂':' ▸');
+      tr+='<div class="ti">'+cardHTML({v:r.v,cls:'lit'+fl('t'+t+'-'+r.v)})+'<small>'+esc(src)+'</small></div>'}
+    else tr+='<div class="ti"><div class="slot">'+(t+1)+'</div><small></small></div>'}
+  const tray=$('#tray');tray.innerHTML=tr;
+  const rv=v.revealed.map(x=>x.v);
+  tray.classList.toggle('trio3',rv.length===3&&rv.every(x=>x===rv[0]));
+  tray.classList.toggle('bad',rv.length>1&&rv.some(x=>x!==rv[0]));
+  // my area
+  const mp=v.players[v.me];
+  $('#me').classList.toggle('turn',myTurn);
+  $('#meHead').innerHTML='<div class="seat-h">'+avHTML(mp,v.me,true)+'<div class="who"><b>'+esc(mp.name)+' <small>(คุณ)</small></b><div class="meta">'+teamTag(mp,v,false)+progHTML(v,v.me)+'</div></div></div><div class="trios">'+trioHTML(mp.trios)+'</div>';
+  const N=mp.hand.length;let hh='';
+  mp.hand.forEach((c,k2)=>{const off=k2-(N-1)/2;
+    const st='--i:'+(di++)+';--rot:'+(off*2.2).toFixed(1)+'deg;--ty:'+(off*off*.45).toFixed(1)+'px';
+    const end=myTurn&&!c.up&&(k2===mp.lo||k2===mp.hi);
+    if(end){const side=k2===mp.lo?'low':'high';
+      hh+=cardHTML({v:c.v,tag:'button',cls:'pick',style:st,attrs:'data-action="ask" data-p="'+v.me+'" data-side="'+side+'" aria-label="เปิดใบ'+(side==='low'?'ต่ำสุด':'สูงสุด')+'ของฉัน"'})}
+    else hh+=cardHTML({v:c.v,cls:c.up?'lit':'',style:st})});
+  $('#hand').innerHTML=hh||'<span class="muted">ไม่มีไพ่ในมือ</span>';
+  const lo=$('#myLo'),hi=$('#myHi');lo.setAttribute('data-p',String(v.me));hi.setAttribute('data-p',String(v.me));
+  lo.disabled=!(myTurn&&mp.canLow);hi.disabled=!(myTurn&&mp.canHigh);
+  prevUp=upNow;
+  fit();
+  // end of game
+  if(v.phase==='over'&&endShownFor!==v.gid){endShownFor=v.gid;const gid=v.gid;
+    setTimeout(()=>{if(App.view&&App.view.gid===gid&&App.view.phase==='over'){renderEnd(App.view);showModal('endModal')}},1500)}
+}
+function renderEnd(v){
+  recordResult(v);const w=v.winner,iWon=w.players.indexOf(v.me)>=0;
+  const names=w.players.map(i=>v.players[i].name).join(' & ');
+  const title=iWon?'คุณชนะ!':(w.team!=null?'ทีม '+TEAM_L[w.team]+' ชนะ':names+' ชนะ');
+  const reason=(w.players.length>1?names+' • ':'')+w.reason;
+  const order=v.players.map((p,i)=>i).sort((a,b)=>{const wa=w.players.indexOf(a)>=0?1:0,wb=w.players.indexOf(b)>=0?1:0;return (wb-wa)||(v.players[b].trios.length-v.players[a].trios.length)});
+  let rank=0;
+  $('#endBody').innerHTML='<div class="trophy">'+(iWon?'🏆':'🎴')+'</div><div class="end-title">'+esc(title)+'</div><p class="end-reason">'+esc(reason)+'</p><div class="rank" style="margin-top:12px">'+
+    order.map(i=>{const p=v.players[i],win=w.players.indexOf(i)>=0;if(!win)rank++;
+      return '<div class="rk'+(win?' win':'')+'"><span class="pos">'+(win?'👑':rank+1)+'</span>'+avHTML(p,i,i===v.me,true)+'<div class="who"><b>'+esc(p.name)+(i===v.me?' <small>(คุณ)</small>':'')+'</b><div class="meta">'+teamTag(p,v,false)+'</div></div><div class="trios">'+trioHTML(p.trios)+'</div></div>'}).join('')+'</div>';
+  const rb=$('#rematchBtn');if(App.role==='client'){rb.disabled=true;rb.textContent='⏳ รอโฮสต์เริ่มใหม่'}else{rb.disabled=false;rb.textContent='🔄 เล่นอีกครั้ง'}
+}
+
+/* =========================================================
+   ONE-SCREEN FITTING
+   ========================================================= */
+let fitRAF=0;
+function fitSoon(){if(window.cancelAnimationFrame)cancelAnimationFrame(fitRAF);fitRAF=(window.requestAnimationFrame||setTimeout)(fit)}
+function rowFit(el,N,W,cap,maxS,minS){
+  N=Math.max(1,N);W=Math.max(30,W);
+  let w=Math.min(cap,W),s=1;
+  if(N>1){s=Math.min(maxS,(W-w)/((N-1)*w));if(s<minS){s=minS;w=W/(1+(N-1)*s)}}
+  w=Math.max(14,Math.floor(w));
+  el.style.setProperty('--w',w+'px');
+  el.style.setProperty('--ov',(N>1?Math.round((s-1)*w):0)+'px');
+}
+function fitCols(n,w,g,W,H){const h=w*1.4;for(let r=1;r<=n;r++){const c=Math.ceil(n/r);if(c*w+(c-1)*g<=W&&r*h+(r-1)*g<=H)return c}return 0}
+function solveTable(iw,ih,n){
+  const LBL=22,SRC=16,g=8;
+  for(let w=110;w>=16;w--){const h=w*1.4,trayRowW=3*(w+8)+16,trayH=LBL+h+SRC;
+    if(trayRowW<=iw&&trayH+18<ih){const c=fitCols(n,w,g,iw,ih-trayH-18-LBL);if(c)return {w:w,c:c,wide:false}}
+    const trayW=trayRowW+24;
+    if(trayH<=ih&&iw-trayW>w){const c2=fitCols(n,w,g,iw-trayW,ih-LBL);if(c2)return {w:w,c:c2,wide:true}}
+  }
+  return {w:16,c:Math.min(n,6),wide:false};
+}
+function fit(){
+  const v=App.view,gs=$('#game');if(!v||!gs.classList.contains('active'))return;
+  const W=window.innerWidth,H=window.innerHeight,land=W>H*1.1&&W>=640;
+  const no=v.n-1,cols=land?no:({1:1,2:2,3:3,4:2,5:3}[no]||3);
+  const opps=$('#opps');opps.style.gridTemplateColumns='repeat('+cols+',minmax(0,1fr))';
+  const ocap=clamp(H*(land?.058:.05),16,46);
+  $$('#opps .fan').forEach(f=>rowFit(f,Number(f.getAttribute('data-n'))||1,f.clientWidth-4,ocap,.78,.3));
+  const hand=$('#hand'),hcap=clamp(H*(land?.15:.13)/1.4,30,96);
+  rowFit(hand,v.players[v.me].hand.length||1,hand.clientWidth-6,hcap,1.08,.6);
+  const felt=$('#felt'),cs=getComputedStyle(felt);
+  const iw=felt.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
+  const ih=felt.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom);
+  if(iw<=0||ih<=0)return;
+  const r=solveTable(iw,ih,v.middle.length||1);
+  felt.classList.toggle('wide',r.wide);
+  felt.style.setProperty('--w',r.w+'px');
+  $('#mid').style.gridTemplateColumns='repeat('+r.c+','+r.w+'px)';
+}
+
+/* =========================================================
+   GAME START / STOP
+   ========================================================= */
+function startGame(players,mode){
+  Ctl.clear();clearFx();hideModal('endModal');hideModal('quitModal');
+  const g=new Game(players,mode);App.game=g;App.me=0;
+  show('game');Ctl.update(g);
+}
+function startSolo(){
+  const c=App.soloCfg;if(c.mode==='team'&&c.count!==4&&c.count!==6)throw new Error('โหมดทีมต้องมีผู้เล่น 4 หรือ 6 คน');
+  App.role='solo';const ps=[{name:settings.name,type:'local',av:'😎'}],bn=shuffle(BOTS.slice());
+  for(let i=1;i<c.count;i++)ps.push({name:bn[i-1][0],type:'bot',av:bn[i-1][1]});
+  startGame(ps,c.mode);
+}
+function stopGame(){Ctl.clear();App.game=null;App.view=null;lastGid=null;clearFx();hideModal('endModal');hideModal('quitModal')}
+function act(a){
+  if(App.role==='client'){Net.send({t:'act',a:a});return}
+  const g=App.game;if(!g)return;
+  if(g.act(App.me,a))Ctl.update(g);else toast('ยังเปิดใบนี้ไม่ได้ตอนนี้');
+}
+
+/* =========================================================
+   ONLINE (PeerJS – optional, loaded on demand)
+   ========================================================= */
+const PREFIX='trio-html-game-room-';
+const Net={peer:null,lobby:[],code:null,hostConn:null,isHost:false,closing:false,
+  loadLib(){return new Promise((res,rej)=>{if(window.Peer)return res();
+    const s=document.createElement('script');s.src='https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js';
+    const to=setTimeout(()=>rej(new Error('หมดเวลาโหลดระบบออนไลน์')),15000);
+    s.onload=()=>{clearTimeout(to);window.Peer?res():rej(new Error('โหลดระบบออนไลน์ไม่สำเร็จ'))};
+    s.onerror=()=>{clearTimeout(to);rej(new Error('โหลดระบบออนไลน์ไม่สำเร็จ (ตรวจสอบอินเทอร์เน็ต) – โหมดเล่นคนเดียวยังใช้งานได้'))};
+    document.head.appendChild(s)})},
+  reset(){this.closing=true;
+    try{this.lobby.forEach(l=>{if(l.conn)l.conn.close()})}catch(e){}
+    try{if(this.hostConn)this.hostConn.close()}catch(e){}
+    try{if(this.peer)this.peer.destroy()}catch(e){}
+    this.peer=null;this.lobby=[];this.code=null;this.hostConn=null;this.isHost=false;
+    setTimeout(()=>{this.closing=false},60);
+    $('#lobby').style.display='none';$('#onlineEntry').style.display='';$('#netStatus').textContent=''},
+  genCode(){const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<5;i++)s+=A[Math.floor(Math.random()*A.length)];return s},
+  create(){this.reset();$('#netStatus').textContent='กำลังสร้างห้อง...';
+    return this.loadLib().then(()=>{
+      this.isHost=true;this.code=this.genCode();App.role='host';
+      return new Promise((res,rej)=>{const peer=new window.Peer(PREFIX+this.code);this.peer=peer;
+        peer.on('open',()=>res());peer.on('connection',c=>this.onConn(c));
+        peer.on('error',e=>rej(new Error('ออนไลน์: '+(e.type==='unavailable-id'?'รหัสห้องซ้ำ ลองสร้างใหม่':(e.message||e.type)))))});
+    }).then(()=>{$('#netStatus').textContent='';this.renderLobby()})},
+  onConn(conn){
+    conn.on('data',d=>{try{this.onHostData(conn,d)}catch(e){showError(e.message)}});
+    conn.on('close',()=>this.onHostClose(conn));conn.on('error',()=>this.onHostClose(conn))},
+  onHostData(conn,d){if(!d||typeof d!=='object')return;
+    if(d.t==='join'){const playing=App.game&&App.game.phase!=='over';
+      if(playing){conn.send({t:'full',msg:'เกมกำลังเล่นอยู่ ลองใหม่หลังจบเกม'});return}
+      if(1+this.lobby.length>=6){conn.send({t:'full',msg:'ห้องเต็มแล้ว (6 คน)'});return}
+      const name=String(d.name||'ผู้เล่น').slice(0,16)||'ผู้เล่น';this.lobby.push({conn:conn,name:name,seat:null});toast(name+' เข้าห้องแล้ว');
+      const c=App.onlineCfg;if(c.count<1+this.lobby.length)c.count=1+this.lobby.length;
+      if(c.mode==='team'&&c.count!==4&&c.count!==6)c.count=c.count<=4?4:6;
+      this.renderLobby()}
+    else if(d.t==='act'){const l=this.lobby.find(x=>x.conn===conn);
+      if(l&&l.seat!=null&&App.game&&App.game.act(l.seat,d.a))Ctl.update(App.game)}},
+  onHostClose(conn){if(this.closing)return;const k=this.lobby.findIndex(l=>l.conn===conn);if(k<0)return;
+    const l=this.lobby[k];this.lobby.splice(k,1);const g=App.game;
+    if(g&&l.seat!=null&&g.phase!=='over'){const pl=g.players[l.seat];pl.type='bot';pl.mem={};pl.av='🤖';pl.name+=' (บอท)';toast(l.name+' ออกจากเกม – บอทเล่นแทน');Ctl.update(g)}
+    else toast(l.name+' ออกจากห้อง');
+    if(!g)this.renderLobby()},
+  names(){return [settings.name].concat(this.lobby.map(l=>l.name))},
+  renderLobby(){if(!this.isHost)return;const names=this.names();
+    this.showLobby({code:this.code,names:names,cfg:App.onlineCfg,isHost:true});
+    this.lobby.forEach(l=>{try{if(l.conn.open)l.conn.send({t:'lobby',code:this.code,names:names,cfg:App.onlineCfg})}catch(e){}})},
+  showLobby(info){$('#onlineEntry').style.display='none';$('#lobby').style.display='grid';
+    $('#roomCode').innerHTML=String(info.code||'').split('').map(ch=>'<span>'+esc(ch)+'</span>').join('');
+    const bots=Math.max(0,(info.cfg.count||3)-info.names.length);let h='';
+    info.names.forEach((n,i)=>{h+='<span class="chip">'+avHTML({av:'🧑'},i,false,true)+'<span>'+esc(n)+'</span>'+(i===0?'<span>👑</span>':'')+'</span>'});
+    for(let k=0;k<bots;k++)h+='<span class="chip">'+avHTML({av:BOTS[k%BOTS.length][1]},6+k,false,true)+'<span>บอท</span></span>';
+    $('#plist').innerHTML=h;
+    renderPicker($('#hostControls'),info.cfg,'online',Math.max(3,info.names.length),!info.isHost);
+    $('#lobbyFoot').innerHTML=info.isHost?'<button type="button" class="btn big emerald" data-action="host-start">▶ เริ่มเกม</button>':'<div class="wait">⏳ รอโฮสต์เริ่มเกม...</div>'},
+  join(code){this.reset();
+    if(!/^[A-Z0-9]{5}$/.test(code))return Promise.reject(new Error('รหัสห้องต้องมี 5 ตัวอักษร'));
+    $('#netStatus').textContent='กำลังเชื่อมต่อ...';
+    return this.loadLib().then(()=>{this.code=code;App.role='client';
+      return new Promise((res,rej)=>{const peer=new window.Peer();this.peer=peer;
+        peer.on('error',e=>rej(new Error(e.type==='peer-unavailable'?'ไม่พบห้องนี้ – ตรวจสอบรหัสห้อง':'ออนไลน์: '+(e.message||e.type))));
+        peer.on('open',()=>{const conn=peer.connect(PREFIX+code,{reliable:true});this.hostConn=conn;
+          const to=setTimeout(()=>rej(new Error('เชื่อมต่อห้องไม่สำเร็จ')),12000);
+          conn.on('open',()=>{clearTimeout(to);conn.send({t:'join',name:settings.name});res()});
+          conn.on('data',d=>{try{this.onClientData(d)}catch(e){showError(e.message)}});
+          conn.on('close',()=>{if(this.closing)return;showError('การเชื่อมต่อกับโฮสต์ขาดหาย');leaveAll()})})});
+    }).then(()=>{$('#netStatus').textContent=''})},
+  onClientData(d){if(!d||typeof d!=='object')return;
+    if(d.t==='lobby')this.showLobby({code:d.code,names:d.names||[],cfg:d.cfg||{count:4,mode:'standard'},isHost:false});
+    else if(d.t==='view'&&d.view){App.me=d.view.me;render(d.view)}
+    else if(d.t==='full'){showError(d.msg||'เข้าห้องไม่ได้');leaveAll();show('online')}},
+  send(m){try{if(this.hostConn&&this.hostConn.open)this.hostConn.send(m);else showError('ยังไม่ได้เชื่อมต่อกับโฮสต์')}catch(e){showError(e.message)}},
+  broadcastViews(g){this.lobby.forEach(l=>{if(l.seat!=null&&l.conn&&l.conn.open){try{l.conn.send({t:'view',view:g.viewFor(l.seat)})}catch(e){}}})}
+};
+function hostStart(){
+  const humans=1+Net.lobby.length,c=App.onlineCfg,total=Math.max(c.count,humans);
+  if(total>6)throw new Error('ผู้เล่นเกิน 6 คน');
+  if(c.mode==='team'&&total!==4&&total!==6)throw new Error('โหมดทีมต้องมีผู้เล่น 4 หรือ 6 คน (รวมบอท)');
+  const ps=[{name:settings.name,type:'local',av:'🧑'}];
+  Net.lobby.forEach((l,k)=>{l.seat=k+1;ps.push({name:l.name,type:'remote',av:'🧑'})});
+  const bn=shuffle(BOTS.slice());let b=0;while(ps.length<total){ps.push({name:bn[b][0],type:'bot',av:bn[b][1]});b++}
+  App.role='host';startGame(ps,c.mode);
+}
+function leaveAll(){stopGame();Net.reset();App.role='solo';show('menu')}
+
+/* =========================================================
+   EVENTS (one delegated listener)
+   ========================================================= */
+const H={
+  dismiss(el){const t=el.closest('.toast');if(t&&t.parentNode)t.parentNode.removeChild(t)},
+  nav(el){const to=el.getAttribute('data-to');if(to==='scores')renderStats();refreshUI();show(to)},
+  tab(el){$$('.tab').forEach(t=>t.classList.toggle('on',t===el));$$('.pane').forEach(p=>p.classList.toggle('on',p.id===el.getAttribute('data-tab')))},
+  'solo-start'(){startSolo()},
+  'pick-count'(el){const on=el.getAttribute('data-scope')==='online',cfg=on?App.onlineCfg:App.soloCfg;cfg.count=Number(el.getAttribute('data-n'));
+    if(cfg.mode==='team'&&cfg.count!==4&&cfg.count!==6){cfg.mode='standard';toast('โหมดทีมใช้ได้กับ 4 หรือ 6 คน – เปลี่ยนเป็นโหมดมาตรฐาน')}
+    if(on)Net.renderLobby();else refreshUI()},
+  'pick-mode'(el){const on=el.getAttribute('data-scope')==='online',cfg=on?App.onlineCfg:App.soloCfg;cfg.mode=el.getAttribute('data-m');
+    if(cfg.mode==='team'&&cfg.count!==4&&cfg.count!==6){const humans=on?1+Net.lobby.length:1;cfg.count=(cfg.count<=4&&humans<=4)?4:6;toast('โหมดทีม: ปรับเป็น '+cfg.count+' คน')}
+    if(on)Net.renderLobby();else refreshUI()},
+  'set-diff'(el){settings.diff=el.getAttribute('data-val');saveSettings();refreshUI()},
+  'set-speed'(el){settings.speed=el.getAttribute('data-val');saveSettings();refreshUI()},
+  'toggle-sound'(){settings.sound=!settings.sound;saveSettings();if(settings.sound)Sound.startMusic();else Sound.stopMusic();refreshUI()},
+  'toggle-music'(){settings.music=!settings.music;saveSettings();if(settings.music)Sound.startMusic();else Sound.stopMusic();refreshUI()},
+  mid(el){act({type:'mid',i:Number(el.getAttribute('data-i'))})},
+  ask(el){act({type:'hand',p:Number(el.getAttribute('data-p')),side:el.getAttribute('data-side')})},
+  quit(){if(App.view&&App.view.phase!=='over')showModal('quitModal');else H['leave-game']()},
+  'quit-no'(){hideModal('quitModal')},
+  'quit-yes'(){hideModal('quitModal');H['leave-game']()},
+  'leave-game'(){if(App.role==='solo'){stopGame();show('menu')}else leaveAll()},
+  rematch(){hideModal('endModal');if(App.role==='host')hostStart();else if(App.role==='solo')startSolo()},
+  'create-room'(){return Net.create().catch(e=>{Net.reset();App.role='solo';throw e})},
+  'join-room'(){const code=$('#joinCode').value.trim().toUpperCase();return Net.join(code).catch(e=>{Net.reset();App.role='solo';throw e})},
+  'share-room'(){if(!Net.code)return;const url=location.href.split('?')[0].split('#')[0]+'?room='+Net.code,text='มาเล่น TRIO กัน! รหัสห้อง: '+Net.code;
+    const copy=()=>{if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(text+' '+url).then(()=>toast('คัดลอกลิงก์แล้ว')).catch(()=>toast('รหัสห้อง: '+Net.code));toast('รหัสห้อง: '+Net.code)};
+    if(navigator.share)return navigator.share({title:'TRIO',text:text,url:url}).catch(e=>{if(!e||e.name!=='AbortError')return copy()});
+    return copy()},
+  'copy-code'(){if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(Net.code||'').then(()=>toast('คัดลอกรหัสห้องแล้ว')).catch(()=>toast('รหัสห้อง: '+Net.code));toast('รหัสห้อง: '+Net.code)},
+  'host-start'(){hostStart()},
+  'leave-room'(){leaveAll()},
+  'reset-scores'(){store.set('stats',EMPTY_STATS);renderStats();toast('รีเซ็ตสถิติแล้ว')},
+  'self-test'(el){selfTest(el)}
+};
+document.addEventListener('click',e=>{
+  const t=e.target;if(!t||!t.closest)return;
+  const el=t.closest('[data-action]');if(!el||el.disabled)return;
+  const name=el.getAttribute('data-action'),fn=H[name];if(!fn)return;
+  Sound.unlock();if(name!=='dismiss')Sound.play('click');
+  try{const r=fn(el,e);if(r&&typeof r.then==='function')r.catch(err=>showError((err&&err.message)||String(err)))}
+  catch(err){console.error(err);showError((err&&err.message)||String(err))}
+});
+document.addEventListener('input',e=>{
+  const t=e.target;
+  if(t.classList&&t.classList.contains('name-input')){settings.name=t.value.trim().slice(0,16)||'ผู้เล่น';saveSettings();
+    $$('.name-input').forEach(x=>{if(x!==t)x.value=settings.name})}
+  if(t.id==='joinCode')t.value=t.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,5);
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')hideModal('quitModal');
+  if(e.key==='Enter'&&e.target&&e.target.id==='joinCode'){e.preventDefault();const b=document.querySelector('[data-action="join-room"]');if(b)b.click()}
+});
+window.addEventListener('resize',fitSoon);
+window.addEventListener('orientationchange',()=>setTimeout(fit,250));
+
+/* =========================================================
+   INIT
+   ========================================================= */
+try{
+  const bg=$('#bg');for(let k=0;k<14;k++){const p=document.createElement('i');
+    p.setAttribute('style','--x:'+(Math.random()*100)+'%;--s:'+(4+Math.random()*8)+'px;--d:'+(10+Math.random()*12)+'s;--dl:'+(-Math.random()*20)+'s');bg.appendChild(p)}
+  $('#hero').innerHTML=[1,7,12].map((n,i)=>'<div class="hc hc'+i+'">'+cardHTML({v:n,cls:i===1?'lit':''})+'</div>').join('');
+  let deck='';for(let n=1;n<=12;n++)deck+=cardHTML({v:n});$('#deck').innerHTML=deck+cardHTML({back:true});
+  refreshUI();renderStats();
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitSoon).catch(()=>{});
+  let q=null;try{q=new URLSearchParams(location.search).get('room')}catch(e){}
+  if(q){$('#joinCode').value=q.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,5);show('online');toast('ใส่ชื่อแล้วกด "เข้าร่วม" ได้เลย')}
+}catch(e){showError('เริ่มต้นไม่สำเร็จ: '+e.message)}
+})();
+</script>
+</body>
+</html>
